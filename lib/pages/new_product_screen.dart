@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uno/uno.dart';
 import 'package:barraca_app/animation/FadeAnimation.dart';
@@ -14,11 +17,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   final uno = Uno();
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // sms();
-  }
+  String? image = '';
 
   void sms() {
 // Make a request for a user with a given ID
@@ -130,6 +129,32 @@ class _NewProductScreenState extends State<NewProductScreen> {
                               obscureText: false,
                               onSaved: (description) =>
                                   _formData['description'] = description ?? ''),
+                          GestureDetector(
+                            child: image == ''
+                                ? Image.asset(
+                                    "assets/images/image_placeholder.jpg",
+                                    height: 200,
+                                    width: 200,
+                                    fit: BoxFit.fill)
+                                : Image.file(File(''),
+                                    height: 200, width: 200, fit: BoxFit.fill),
+                            onTap: () async {
+                              final ImagePicker picker = ImagePicker();
+// Pick an image.
+                              final XFile? file = await picker
+                                  .pickImage(
+                                source: ImageSource.camera,
+                                imageQuality: 10,
+                              )
+                                  .then((value) {
+                                print(
+                                    '################################################################################# $value');
+                              });
+                              setState(() {});
+                              print(
+                                  '################################################################################# $file');
+                            },
+                          ),
                           makeInput(
                               label: "Imagem",
                               onSaved: (img) => _formData['img'] = img ?? ''),

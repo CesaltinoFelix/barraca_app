@@ -46,7 +46,7 @@ dependencies:
   animated_theme_switcher: ^2.0.8
   uno: ^1.1.8
   share_plus: any 
-
+  image_picker: ^0.8.7+5
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -78,6 +78,7 @@ flutter:
     - assets/icons/
     - assets/background.png
     - assets/illustration.png
+    - assets/images/image_placeholder.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
