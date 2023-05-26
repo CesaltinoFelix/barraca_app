@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uno/uno.dart';
-import 'package:barraca_app/animation/FadeAnimation.dart';
 
 class NewProductScreen extends StatefulWidget {
   @override
@@ -26,9 +25,9 @@ class _NewProductScreenState extends State<NewProductScreen> {
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
-        print(pickedImage);
+        print('#######################################################');
+        print(pickedImage.path);
       });
-      print(pickedImage);
     }
   }
 
