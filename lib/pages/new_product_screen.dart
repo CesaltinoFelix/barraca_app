@@ -15,9 +15,22 @@ class _NewProductScreenState extends State<NewProductScreen> {
   final _formData = <String, Object>{};
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
-  @override
   final uno = Uno();
-  String? image = '';
+  File? _image;
+  final _picker = ImagePicker();
+
+  // Implementing the image picker
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+        print(pickedImage);
+      });
+      print(pickedImage);
+    }
+  }
 
   void sms() {
 // Make a request for a user with a given ID
@@ -88,8 +101,8 @@ class _NewProductScreenState extends State<NewProductScreen> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
           "Novo Producto",
           style: TextStyle(color: Colors.black),
         ),
@@ -129,35 +142,38 @@ class _NewProductScreenState extends State<NewProductScreen> {
                               obscureText: false,
                               onSaved: (description) =>
                                   _formData['description'] = description ?? ''),
-                          GestureDetector(
-                            child: image == ''
-                                ? Image.asset(
-                                    "assets/images/image_placeholder.jpg",
-                                    height: 200,
-                                    width: 200,
-                                    fit: BoxFit.fill)
-                                : Image.file(File(''),
-                                    height: 200, width: 200, fit: BoxFit.fill),
-                            onTap: () async {
-                              final ImagePicker picker = ImagePicker();
-// Pick an image.
-                              final XFile? file = await picker
-                                  .pickImage(
-                                source: ImageSource.camera,
-                                imageQuality: 10,
-                              )
-                                  .then((value) {
-                                print(
-                                    '################################################################################# $value');
-                              });
-                              setState(() {});
-                              print(
-                                  '################################################################################# $file');
-                            },
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Imagem',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black87),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 4, color: Colors.white),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                  ),
+                                  child: GestureDetector(
+                                      child: makeInputImg(),
+                                      onTap: _openImagePicker),
+                                ),
+                              ],
+                            ),
                           ),
-                          makeInput(
-                              label: "Imagem",
-                              onSaved: (img) => _formData['img'] = img ?? ''),
+                          const SizedBox(
+                            height: 20,
+                          )
                         ],
                       ),
                       Column(
@@ -233,34 +249,19 @@ class _NewProductScreenState extends State<NewProductScreen> {
     );
   }
 
-  Widget makeInputImg({label}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        TextField(
-          cursorColor: Colors.orange.shade300,
-          decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange.shade300)),
-            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade400)),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade400)),
-          ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-      ],
-    );
+  Widget makeInputImg() {
+    return _image == null
+        ? Image.asset(
+            height: 100,
+            width: 100,
+            fit: BoxFit.fill,
+            "assets/images/image_placeholder.jpg",
+          )
+        : Image.file(
+            height: 100,
+            width: 100,
+            fit: BoxFit.cover,
+            _image!,
+          );
   }
 }
