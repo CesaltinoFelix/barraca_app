@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
 import 'package:uno/uno.dart';
+import 'package:get/get.dart';
 
 class NewProductScreen extends StatefulWidget {
   @override
@@ -25,8 +27,13 @@ class _NewProductScreenState extends State<NewProductScreen> {
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
+        var res = patchImage(
+            'http://192.168.100.54:3000/upload-img', pickedImage.path);
+        print('#######################################################');
+        print(res);
         print('#######################################################');
         print(pickedImage.path);
+        // Get.defaultDialog(title: 'Image Selected');
       });
     }
   }
@@ -263,4 +270,14 @@ class _NewProductScreenState extends State<NewProductScreen> {
             _image!,
           );
   }
+}
+
+Future<http.StreamedResponse> patchImage(String url, String filepath) async {
+  var request = http.MultipartRequest('POST', Uri.parse(url));
+  request.files.add(await http.MultipartFile.fromPath("img", filepath));
+  request.headers.addAll({
+    "Content-type": "multipart/form-data",
+  });
+  var response = request.send();
+  return response;
 }

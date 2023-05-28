@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:barraca_app/animation/FadeAnimation.dart';
 import 'package:barraca_app/pages/login.dart';
 import 'package:barraca_app/pages/signup.dart';
+import 'package:get/get.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'dart:math';
-import 'package:simple_animations/simple_animations.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     home: WelcomeScreen(),
   ));
