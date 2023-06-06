@@ -1,8 +1,10 @@
+import 'package:barraca_app/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/help.dart';
 import 'package:barraca_app/pages/personalize_screen.dart';
 import 'package:barraca_app/pages/product_screen.dart';
 import 'package:barraca_app/pages/sell_screen.dart';
+import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen();
@@ -42,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Center(
                   child: Image.asset(
                     'assets/images/home/$imageName.png',
-                    height: 80.0,
+                    height: 100.0,
                   ),
                 ),
                 SizedBox(
@@ -52,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainText,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                   ),
                 ),
               ],
@@ -74,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 1,
@@ -83,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        padding: EdgeInsets.symmetric(vertical: 200.0, horizontal: 70.0),
         height: MediaQuery.of(context).size.height,
         color: Colors.grey.shade200,
         child: Column(
@@ -94,11 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   getExpanded('selling', 'Vender', SellCreen()),
-                  getExpanded('products', 'Produtos', ProductCreen()),
+                  // getExpanded('products', 'Produtos', ProductCreen()),
                 ],
               ),
             ),
-            Expanded(
+            /*   Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -115,10 +118,86 @@ class _HomeScreenState extends State<HomeScreen> {
                   getExpanded('help', 'Ajuda', HelpScreen()),
                 ],
               ),
-            ),
+            ), */
           ],
         ),
       ),
+      drawer: myDrawer(),
     );
   }
+}
+
+Widget myDrawer() {
+  return Drawer(
+    backgroundColor: Colors.grey.shade100,
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+          ),
+          child: Text(
+            'Cesaltino Felix',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.message),
+          title: Text('Produtos'),
+          onTap: () {
+            Get.back();
+            Get.to(ProductCreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.account_circle),
+          title: Text('Costumizar'),
+          onTap: () {
+            Get.back();
+            Get.to(PersonalizeSreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Vendas'),
+          onTap: () {
+            Get.back();
+            Get.to(ProductCreen());
+          },
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(Icons.message),
+          title: Text('Perfil'),
+          onTap: () {
+            Get.back();
+            Get.to(ProfileScreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.message),
+          title: Text('Historico'),
+          onTap: () {
+            Get.back();
+            Get.to(ProductCreen());
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.account_circle),
+          title: Text('Ajuda'),
+          onTap: () {
+            Get.back();
+            Get.to(HelpScreen());
+          },
+        ),
+      ],
+    ),
+  );
 }

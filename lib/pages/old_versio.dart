@@ -4,7 +4,6 @@ import 'package:barraca_app/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/qr_code.dart';
 import 'package:uno/uno.dart';
-import 'package:barraca_app/helpers/api.dart';
 
 class SellCreen extends StatefulWidget {
   const SellCreen({Key? key}) : super(key: key);
@@ -14,19 +13,18 @@ class SellCreen extends StatefulWidget {
 }
 
 class SelltCreenState extends State<SellCreen> {
-  List<dynamic> myOrder = [];
+  List<Map<String, dynamic>> myOrder = [];
 
   final uno = Uno();
-  List<dynamic>? products;
+  var products;
   productList() async {
     var res = await ProductController().productList();
-    if (res.data is List<dynamic>) {
-      setState(() {
-        products = res.data;
-      });
-    }
+    setState(() {
+      products = res;
+    });
   }
 
+  // ProductController? c = Get.put(ProductController());
   @override
   initState() {
     productList();
@@ -43,8 +41,8 @@ class SelltCreenState extends State<SellCreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text(
           "Vender",
           style: TextStyle(color: Colors.black),
         ),
@@ -52,67 +50,64 @@ class SelltCreenState extends State<SellCreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
-      body: products != null
-          ? ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                if (index < products!.length) {
-                  Map<String, dynamic> product = products![index];
-                  Order order = currentUser.cart[index];
-                  return _buildCart(product, myOrder, order);
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView.separated(
+          itemBuilder: (BuildContext context, int index) {
+            if (index < currentUser.cart.length) {
+              Order order = currentUser.cart[index];
+              return _buildCart(order, myOrder);
+            }
+            return Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          /* Text(
-                            "Produtos Selecionados",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            myOrder?.length != null ? "${myOrder.length}" : "0",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ) */
-                        ],
+                      Text(
+                        "Produtos Selecionados",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Valor Total",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "\Kz${totalPrice.toStringAsFixed(2)}",
-                            style: TextStyle(
-                                color: Colors.green.shade700,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 80)
+                      Text(
+                        "9",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      )
                     ],
                   ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(thickness: 1.0, color: Colors.grey),
-              itemCount: products!.length + 1)
-          : Container(),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Valor Total",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "\Kz${totalPrice.toStringAsFixed(2)}",
+                        style: TextStyle(
+                            color: Colors.green.shade700,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 80)
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) =>
+              Divider(thickness: 1.0, color: Colors.grey),
+          itemCount: currentUser.cart.length + 1),
       bottomSheet: Padding(
         padding: const EdgeInsets.all(10),
         child: GestureDetector(
@@ -125,13 +120,13 @@ class SelltCreenState extends State<SellCreen> {
             decoration: BoxDecoration(
                 color: Colors.orange.shade300,
                 borderRadius: BorderRadius.circular(50),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
                       blurRadius: 6,
                       color: Colors.black26,
                       offset: Offset(0, -1))
                 ]),
-            child: const Center(
+            child: Center(
               child: Text(
                 "CHECKOUT",
                 style: TextStyle(
@@ -146,16 +141,9 @@ class SelltCreenState extends State<SellCreen> {
     );
   }
 
-  Widget _buildCart(Map<String, dynamic> product, myOrder, order) {
-    // final TextEditingController textEditingController = TextEditingController();
+  Widget _buildCart(Order order, myOrder) {
     int quantity = 0;
-    print('primeiro ${quantity}');
-/*     @override
-    void dispose() {
-      textEditingController.dispose();
-      super.dispose();
-    } */
-
+    print('celson 01');
     return Container(
       height: 140,
       child: Row(
@@ -164,38 +152,48 @@ class SelltCreenState extends State<SellCreen> {
           Expanded(
             child: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.all(12),
-                  width: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                          image: NetworkImage('${baseUrl}/${product['img']}'),
-                          fit: BoxFit.cover)),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      print(quantity);
+                      order.quantity++;
+                      myOrder.add({'name': 'celson', 'age': 23});
+                    });
+                    print(myOrder);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(12),
+                    width: 150,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                            image: AssetImage(order.food.imageUrl),
+                            fit: BoxFit.cover)),
+                  ),
                 ),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.all(12),
+                    margin: EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          product['name'],
-                          style: const TextStyle(
+                          order.food.name,
+                          style: TextStyle(
                               color: Colors.black,
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Text(
-                          product['description'],
-                          style: const TextStyle(
+                          order.restaurant.name,
+                          style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: 10),
                         Container(
                           width: 100,
                           decoration: BoxDecoration(
@@ -208,8 +206,10 @@ class SelltCreenState extends State<SellCreen> {
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    order.quantity--;
+                                    quantity--;
                                   });
+
+                                  print('quantity.toString()');
                                 },
                                 child: Text(
                                   "-",
@@ -219,19 +219,20 @@ class SelltCreenState extends State<SellCreen> {
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
-                              const SizedBox(width: 20),
+                              SizedBox(width: 20),
                               Text(
+                                // quantity.toString()
                                 order.quantity.toString(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(width: 20),
+                              SizedBox(width: 20),
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
-                                    order.quantity++;
+                                    quantity++;
                                   });
                                 },
                                 child: Text(
@@ -253,27 +254,20 @@ class SelltCreenState extends State<SellCreen> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.all(12),
+            margin: EdgeInsets.all(12),
             child: Column(
               children: [
-                CheckboxExample(
-                    product: product, myOrder: myOrder, quantity: quantity),
-                const SizedBox(
+                CheckboxExample(),
+                SizedBox(
                   height: 10,
                 ),
                 Text(
-                  "\Kz${product['price']}",
-                  style: const TextStyle(
+                  "\Kz${order.food.price * order.quantity}",
+                  style: TextStyle(
                       color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
-                /* TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter text',
-                  ),
-                ), */
               ],
             ),
           )
@@ -284,23 +278,19 @@ class SelltCreenState extends State<SellCreen> {
 }
 
 class CheckboxExample extends StatefulWidget {
-  var product;
-  var myOrder;
-  var quantity;
-  CheckboxExample({this.product, this.myOrder, this.quantity, super.key});
+  const CheckboxExample({super.key});
   @override
   State<CheckboxExample> createState() => _CheckboxExampleState();
 }
 
 class _CheckboxExampleState extends State<CheckboxExample> {
   bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
       return Colors.orange.shade300;
     }
-
-    print(widget.quantity);
 
     return Checkbox(
       checkColor: Colors.white,
@@ -309,34 +299,8 @@ class _CheckboxExampleState extends State<CheckboxExample> {
       onChanged: (bool? value) {
         setState(() {
           isChecked = value!;
-          if (isChecked) {
-            var productOrder = widget.product;
-            productOrder['quantity'] = 1;
-            setState(() {
-              widget.myOrder.add(productOrder);
-              widget.quantity = 1;
-            });
-          } else {
-            int index = widget.myOrder
-                .indexWhere((p) => p['id'] == widget.product['id']);
-
-            if (index >= 0) {
-              setState(() {
-                widget.myOrder
-                    .removeWhere((p) => p['id'] == widget.product['id']);
-                widget.quantity = 0;
-              });
-            }
-          }
         });
       },
     );
   }
-}
-
-bool? search(order, id) {
-  print(id);
-  int index = order.indexWhere((p) => p['id'] == id);
-
-  return index >= 0 ? true : false;
 }

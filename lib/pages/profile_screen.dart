@@ -89,10 +89,22 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
+          "Perfil",
+          style: TextStyle(color: Colors.black),
+        ),
+        elevation: 1,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: <Widget>[
-          SizedBox(height: kSpacingUnit.w * 5),
           header,
+          SizedBox(
+            height: 10,
+          ),
           Expanded(
             child: ListView(
               children: <Widget>[

@@ -1,7 +1,9 @@
-import 'package:barraca_app/data/data.dart';
-import 'package:barraca_app/models/order.dart';
+import 'package:barraca_app/controllers/product_controller.dart';
+import 'package:barraca_app/helpers/api.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/new_product_screen.dart';
+import 'package:get/get.dart';
+import 'package:uno/uno.dart';
 
 class ProductCreen extends StatefulWidget {
   const ProductCreen({Key? key}) : super(key: key);
@@ -11,44 +13,63 @@ class ProductCreen extends StatefulWidget {
 }
 
 class _ProductCreenState extends State<ProductCreen> {
+  final uno = Uno();
+  var products;
+  productList() async {
+    var res = await ProductController().productList();
+    setState(() {
+      products = res;
+    });
+  }
+
+  // ProductController? c = Get.put(ProductController());
+  @override
+  initState() {
+    productList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    double totalPrice = 0.0;
+/*     double totalPrice = 0.0;
     currentUser.cart.forEach((Order order) {
       totalPrice += order.food.price * order.quantity;
     });
+ */ // Instantiate your class using Get.put() to make it available for all "child" routes there.
+
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text(
-          "Lista de Productos",
-          style: TextStyle(color: Colors.black),
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.grey.shade100,
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Text(
+            "Lista de Productos",
+            style: TextStyle(color: Colors.black),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NewProductScreen()));
+              },
+            )
+          ],
+          elevation: 1,
+          centerTitle: true,
+          backgroundColor: Colors.white,
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => NewProductScreen()));
-            },
-          )
-        ],
-        elevation: 1,
-        centerTitle: true,
-        backgroundColor: Colors.white,
-      ),
-      body: ListView.builder(
-          itemCount: currentUser.cart.length,
-          itemBuilder: (BuildContext context, int index) {
-            Order order = currentUser.cart[index];
-            return _productCard(order);
-          }),
-    );
+        body: products != null
+            ? ListView.builder(
+                itemCount: products?.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var product = products?.data[index];
+                  return _productCard(product);
+                })
+            : Container());
   }
 
-  Widget _productCard(Order order) {
+  Widget _productCard(product) {
     return Container(
       height: 100,
       child: Row(
@@ -63,7 +84,7 @@ class _ProductCreenState extends State<ProductCreen> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
-                          image: AssetImage(order.food.imageUrl),
+                          image: NetworkImage('${baseUrl}/${product['img']}'),
                           fit: BoxFit.cover)),
                 ),
                 Expanded(
@@ -74,7 +95,7 @@ class _ProductCreenState extends State<ProductCreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          order.food.name,
+                          product['name'],
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 18,
@@ -82,7 +103,7 @@ class _ProductCreenState extends State<ProductCreen> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "\Kz${order.food.price * order.quantity}",
+                          "\Kz${product['price']}",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -125,7 +146,12 @@ class _ProductCreenState extends State<ProductCreen> {
                           ),
                           TextButton(
                             child: const Text('Sim'),
-                            onPressed: () => Navigator.of(ctx).pop(true),
+                            onPressed: () async {
+                              Navigator.of(ctx).pop(true);
+                              var res = await ProductController()
+                                  .productDelete(product['id']);
+                              productList();
+                            },
                           ),
                         ],
                       ),

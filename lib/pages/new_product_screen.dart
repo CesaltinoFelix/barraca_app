@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:barraca_app/controllers/product_controller.dart';
+import 'package:barraca_app/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
-import 'package:http/http.dart' as http;
 import 'package:uno/uno.dart';
+import 'package:barraca_app/helpers/api.dart';
 import 'package:get/get.dart';
 
 class NewProductScreen extends StatefulWidget {
@@ -19,32 +21,20 @@ class _NewProductScreenState extends State<NewProductScreen> {
   final uno = Uno();
   File? _image;
   final _picker = ImagePicker();
-
+  XFile? pickedImage;
   // Implementing the image picker
   Future<void> _openImagePicker() async {
-    final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+    XFile? auxPickedImage;
+    auxPickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      pickedImage = auxPickedImage;
+    });
+
     if (pickedImage != null) {
       setState(() {
-        _image = File(pickedImage.path);
-        var res = patchImage(
-            'http://192.168.100.54:3000/upload-img', pickedImage.path);
-        print('#######################################################');
-        print(res);
-        print('#######################################################');
-        print(pickedImage.path);
-        // Get.defaultDialog(title: 'Image Selected');
+        _image = File(pickedImage!.path);
       });
     }
-  }
-
-  void sms() {
-// Make a request for a user with a given ID
-    uno.get('http://192.168.100.53:3000/products').then((response) {
-      print(response.data); // it's a Map<String, dynamic>.
-    }).catchError((error) {
-      print(error); // It's a UnoError.
-    });
   }
 
   Future<void> _submitForm() async {
@@ -53,14 +43,14 @@ class _NewProductScreenState extends State<NewProductScreen> {
     if (!isValid) {
       return;
     } */
-
     _formKey.currentState?.save();
 
-    // setState(() => _isLoading = true);
+    setState(() => _isLoading = true);
     try {
-      await saveProduct(_formData);
-
-      Navigator.of(context).pop();
+      await ProductController().saveProduct(
+          context: context, data: _formData, pickedImage: pickedImage);
+      // Navigator.of(context).pop();
+      Get.to(HomeScreen());
     } catch (error) {
       await showDialog<void>(
         context: context,
@@ -77,27 +67,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
       );
     } finally {
       setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void>? saveProduct(Map<String, Object> data) async {
-    final product = {
-      'id': '',
-      'name': data['name'].toString(),
-      'description': data['description'].toString(),
-      'price': data['price'],
-      'img': data['img'].toString(),
-    };
-    try {
-      await uno
-          .post('http://192.168.100.53:3000/product', data: product)
-          .then((response) {
-        print(response.data); // it's a Map<String, dynamic>.
-      }).catchError((error) {
-        print(error); // It's a UnoError.
-      });
-    } catch (e) {
-      print('Error fetching product data: $e');
     }
   }
 
@@ -234,7 +203,6 @@ class _NewProductScreenState extends State<NewProductScreen> {
           height: 5,
         ),
         TextFormField(
-          initialValue: '1',
           onSaved: onSaved,
           obscureText: obscureText,
           cursorColor: Colors.orange.shade300,
@@ -270,14 +238,4 @@ class _NewProductScreenState extends State<NewProductScreen> {
             _image!,
           );
   }
-}
-
-Future<http.StreamedResponse> patchImage(String url, String filepath) async {
-  var request = http.MultipartRequest('POST', Uri.parse(url));
-  request.files.add(await http.MultipartFile.fromPath("img", filepath));
-  request.headers.addAll({
-    "Content-type": "multipart/form-data",
-  });
-  var response = request.send();
-  return response;
 }

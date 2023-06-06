@@ -8,7 +8,7 @@ import 'package:barraca_app/models/user.dart';
 final _burrito = Food(
     imageUrl: "assets/images/products/burrito.jpg",
     name: "Burrito",
-    price: 8.99);
+    price: 2222);
 
 final _steak = Food(
     imageUrl: "assets/images/products/steak.jpg", name: "Steak", price: 17.99);
@@ -22,12 +22,10 @@ final _ramen = Food(
 final _pancakes = Food(
     imageUrl: "assets/images/products/pancakes.jpg",
     name: "Pancakes",
-    price: 9.99);
+    price: 2222);
 
 final _burger = Food(
-    imageUrl: "assets/images/products/burger.jpg",
-    name: "Burger",
-    price: 14.99);
+    imageUrl: "assets/images/products/burger.jpg", name: "Burger", price: 2222);
 
 final _pizza = Food(
     imageUrl: "assets/images/products/pizza.jpg", name: "Pizza", price: 11.99);
@@ -35,7 +33,7 @@ final _pizza = Food(
 final _salmon = Food(
     imageUrl: "assets/images/products/salmon.jpg",
     name: "Salmon Salad",
-    price: 12.99);
+    price: 222);
 
 // Restaurants
 
@@ -100,51 +98,51 @@ final currentUser = User(name: "Zeeshan Ahmed", orders: [
       restaurant: _restaurant2,
       food: _steak,
       date: "Apr 30, 2022",
-      quantity: 1),
+      quantity: 0),
   Order(
       restaurant: _restaurant0,
       food: _ramen,
       date: "Apr 28, 2022",
-      quantity: 3),
+      quantity: 0),
   Order(
       restaurant: _restaurant1,
       food: _burrito,
       date: "Apr 30, 2022",
-      quantity: 2),
+      quantity: 0),
   Order(
       restaurant: _restaurant3,
       food: _salmon,
       date: "Apr 30, 2022",
-      quantity: 1),
+      quantity: 0),
   Order(
       restaurant: _restaurant4,
       food: _pancakes,
       date: "Apr 30, 2022",
-      quantity: 1)
+      quantity: 0)
 ], cart: [
   Order(
       restaurant: _restaurant2,
       food: _burger,
       date: "Apr 29, 2022",
-      quantity: 2),
+      quantity: 0),
   Order(
       restaurant: _restaurant2,
       food: _pasta,
       date: "Apr 30, 2022",
-      quantity: 1),
+      quantity: 0),
   Order(
       restaurant: _restaurant3,
       food: _salmon,
       date: "Apr 30, 2022",
-      quantity: 1),
+      quantity: 0),
   Order(
       restaurant: _restaurant4,
       food: _pancakes,
       date: "Apr 29, 2022",
-      quantity: 3),
+      quantity: 0),
   Order(
       restaurant: _restaurant1,
       food: _burrito,
       date: "Apr 30, 2022",
-      quantity: 2)
+      quantity: 0)
 ]);
