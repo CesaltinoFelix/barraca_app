@@ -1,8 +1,8 @@
+import 'package:barraca_app/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:barraca_app/animation/FadeAnimation.dart';
-import 'package:barraca_app/app.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -75,8 +75,10 @@ class LoginPage extends StatelessWidget {
                         minWidth: double.infinity,
                         height: 60,
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => App()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
                         },
                         color: Colors.orange.shade300,
                         elevation: 0,
