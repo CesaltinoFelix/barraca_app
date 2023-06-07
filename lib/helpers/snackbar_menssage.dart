@@ -10,6 +10,14 @@ class SnackbarMenssage {
     nasckbarModel(context, 'Erro Ao Cadastrar Produto!', Colors.red.shade400);
   }
 
+  nasckSalesSuccess(context) {
+    nasckbarModel(context, 'Venda Cadastrada!', Colors.green.shade400);
+  }
+
+  nasckSalesError(context) {
+    nasckbarModel(context, 'Erro Ao Cadastrar venda!', Colors.red.shade400);
+  }
+
   nasckbarModel(context, text, color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

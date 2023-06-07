@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/qr_code.dart';
 import 'package:uno/uno.dart';
 import 'package:barraca_app/helpers/api.dart';
+import 'package:barraca_app/controllers/sale_controller.dart';
 
 class SellCreen extends StatefulWidget {
   const SellCreen({Key? key}) : super(key: key);
@@ -42,8 +43,8 @@ class SelltCreenState extends State<SellCreen> {
   @override
   Widget build(BuildContext context) {
     double totalPrice = 0.0;
-    currentUser.cart.forEach((Order order) {
-      totalPrice += order.food.price * order.quantity;
+    myOrder.forEach((order) {
+      totalPrice += order['price'] * order['quantity'];
     });
 
     return Scaffold(
@@ -122,6 +123,9 @@ class SelltCreenState extends State<SellCreen> {
         padding: const EdgeInsets.all(10),
         child: GestureDetector(
           onTap: () {
+            myOrder.forEach((order) {
+              SaleController().saveSales(data: order, context: context);
+            });
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => QrCodePage()));
           },
@@ -184,15 +188,7 @@ class SelltCreenState extends State<SellCreen> {
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          product['description'],
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
                         Container(
                           width: 120,
                           decoration: BoxDecoration(
