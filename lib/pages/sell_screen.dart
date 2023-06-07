@@ -33,6 +33,12 @@ class SelltCreenState extends State<SellCreen> {
     super.initState();
   }
 
+  void loadUi() {
+    setState(() {
+      products;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double totalPrice = 0.0;
@@ -57,8 +63,7 @@ class SelltCreenState extends State<SellCreen> {
               itemBuilder: (BuildContext context, int index) {
                 if (index < products!.length) {
                   Map<String, dynamic> product = products![index];
-                  Order order = currentUser.cart[index];
-                  return _buildCart(product, myOrder, order);
+                  return _buildCart(product, myOrder, loadUi);
                 }
                 return Padding(
                   padding: const EdgeInsets.all(15.0),
@@ -146,16 +151,8 @@ class SelltCreenState extends State<SellCreen> {
     );
   }
 
-  Widget _buildCart(Map<String, dynamic> product, myOrder, order) {
-    // final TextEditingController textEditingController = TextEditingController();
-    int quantity = 0;
-    print('primeiro ${quantity}');
-/*     @override
-    void dispose() {
-      textEditingController.dispose();
-      super.dispose();
-    } */
-
+//Criando os widgets de compras
+  Widget _buildCart(Map<String, dynamic> product, myOrder, loadUi) {
     return Container(
       height: 140,
       child: Row(
@@ -197,7 +194,7 @@ class SelltCreenState extends State<SellCreen> {
                         ),
                         const SizedBox(height: 10),
                         Container(
-                          width: 100,
+                          width: 120,
                           decoration: BoxDecoration(
                               border:
                                   Border.all(width: 0.8, color: Colors.grey),
@@ -206,39 +203,48 @@ class SelltCreenState extends State<SellCreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    order.quantity--;
-                                  });
-                                },
+                                onTap: product['quantity'] == null ||
+                                        product['quantity'] == 0 ||
+                                        product['quantity'] == 1
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          product['quantity']--;
+                                        });
+                                      },
                                 child: Text(
                                   "-",
                                   style: TextStyle(
                                       color: Colors.orange.shade300,
-                                      fontSize: 18,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
                               const SizedBox(width: 20),
                               Text(
-                                order.quantity.toString(),
+                                product['quantity'] == null
+                                    ? '0'
+                                    : product['quantity'].toString(),
                                 style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 20,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(width: 20),
                               GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    order.quantity++;
-                                  });
-                                },
+                                onTap: product['quantity'] == null ||
+                                        product['quantity'] == 0
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          product['quantity']++;
+                                        });
+                                      },
                                 child: Text(
                                   "+",
                                   style: TextStyle(
                                       color: Colors.orange.shade300,
-                                      fontSize: 18,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
@@ -257,7 +263,7 @@ class SelltCreenState extends State<SellCreen> {
             child: Column(
               children: [
                 CheckboxExample(
-                    product: product, myOrder: myOrder, quantity: quantity),
+                    product: product, myOrder: myOrder, loadUi: loadUi),
                 const SizedBox(
                   height: 10,
                 ),
@@ -286,8 +292,8 @@ class SelltCreenState extends State<SellCreen> {
 class CheckboxExample extends StatefulWidget {
   var product;
   var myOrder;
-  var quantity;
-  CheckboxExample({this.product, this.myOrder, this.quantity, super.key});
+  var loadUi;
+  CheckboxExample({this.product, this.myOrder, this.loadUi, super.key});
   @override
   State<CheckboxExample> createState() => _CheckboxExampleState();
 }
@@ -299,8 +305,6 @@ class _CheckboxExampleState extends State<CheckboxExample> {
     Color getColor(Set<MaterialState> states) {
       return Colors.orange.shade300;
     }
-
-    print(widget.quantity);
 
     return Checkbox(
       checkColor: Colors.white,
@@ -314,8 +318,9 @@ class _CheckboxExampleState extends State<CheckboxExample> {
             productOrder['quantity'] = 1;
             setState(() {
               widget.myOrder.add(productOrder);
-              widget.quantity = 1;
+              widget.product['quantity'] = 1;
             });
+            widget.loadUi();
           } else {
             int index = widget.myOrder
                 .indexWhere((p) => p['id'] == widget.product['id']);
@@ -324,8 +329,9 @@ class _CheckboxExampleState extends State<CheckboxExample> {
               setState(() {
                 widget.myOrder
                     .removeWhere((p) => p['id'] == widget.product['id']);
-                widget.quantity = 0;
+                widget.product['quantity'] = 0;
               });
+              widget.loadUi();
             }
           }
         });
