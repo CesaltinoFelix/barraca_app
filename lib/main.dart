@@ -1,21 +1,42 @@
+import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:barraca_app/pages/login.dart';
-import 'package:barraca_app/pages/signup.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'dart:math';
+import 'package:barraca_app/utils/constants.dart';
 
 void main() {
+  final UserController userController = Get.put(UserController());
+
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      scaffoldBackgroundColor: Colors.white,
+      primarySwatch: Colors.blue,
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, 48),
+          backgroundColor: const Color(0xFFF2994A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+            side: BorderSide.none,
+          ),
+          elevation: 0,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        fillColor: const Color(0xFFFBFBFB),
+        filled: true,
+        border: defaultOutlineInputBorder,
+        enabledBorder: defaultOutlineInputBorder,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Color(0xFFF2994A)),
+        ),
+      ),
+    ),
     home: WelcomeScreen(),
   ));
-
-/*  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  runApp(const MyApp());
-  FlutterNativeSplash.remove(); */
 }
 
 class WelcomeScreen extends StatelessWidget {
@@ -55,25 +76,6 @@ class WelcomeScreen extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  MaterialButton(
-                    minWidth: double.infinity,
-                    height: 60,
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                    },
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Text(
-                      "Login",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
@@ -87,17 +89,14 @@ class WelcomeScreen extends StatelessWidget {
                       minWidth: double.infinity,
                       height: 60,
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupPage()));
+                        Get.off(LoginPage());
                       },
                       color: Colors.orange.shade300,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50)),
                       child: Text(
-                        "Sign up",
+                        "Login",
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 18),
                       ),

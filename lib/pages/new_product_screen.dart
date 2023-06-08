@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uno/uno.dart';
-import 'package:barraca_app/helpers/api.dart';
 import 'package:get/get.dart';
 
 class NewProductScreen extends StatefulWidget {
@@ -78,7 +77,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          "Novo Producto",
+          "Novo Produto",
           style: TextStyle(color: Colors.black),
         ),
         elevation: 1,
@@ -153,28 +152,18 @@ class _NewProductScreenState extends State<NewProductScreen> {
                       ),
                       Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border(
-                                  bottom: BorderSide(color: Colors.black),
-                                  top: BorderSide(color: Colors.black),
-                                  left: BorderSide(color: Colors.black),
-                                  right: BorderSide(color: Colors.black),
-                                )),
-                            child: MaterialButton(
-                              minWidth: double.infinity,
-                              height: 60,
-                              onPressed: _submitForm,
-                              color: Colors.orange.shade300,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Text(
-                                "Salvar Producto",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 18),
-                              ),
+                          ElevatedButton(
+                            onPressed: _submitForm,
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all(
+                                  const Size(double.infinity, 48)),
+                            ),
+                            child: Text(
+                              "Salvar Producto",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  color: Colors.black),
                             ),
                           ),
                           SizedBox(

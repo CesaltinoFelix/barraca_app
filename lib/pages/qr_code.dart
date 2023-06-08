@@ -1,5 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:barraca_app/pages/home_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pdf/widgets.dart' as pw;
+import 'dart:io';
 
 class QrCodePage extends StatefulWidget {
   const QrCodePage({super.key});
@@ -38,6 +43,115 @@ class _QrCodePageState extends State<QrCodePage> {
             ElevatedButton(
               onPressed: () => _onShare(context),
               child: const Text('Share'),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green.shade400)),
+              onPressed: () => Get.to(HomeScreen()),
+              child: const Text('Tela Principal'),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.orange.shade400)),
+              onPressed: () async {
+                /* final date = DateTime.now();
+                final dueDate = date.add(Duration(days: 7));
+
+                final invoice = Invoice(
+                  supplier: Supplier(
+                    name: 'Sarah Field',
+                    address: 'Sarah Street 9, Beijing, China',
+                    paymentInfo: 'https://paypal.me/sarahfieldzz',
+                  ),
+                  customer: Customer(
+                    name: 'Apple Inc.',
+                    address: 'Apple Street, Cupertino, CA 95014',
+                  ),
+                  info: InvoiceInfo(
+                    date: date,
+                    dueDate: dueDate,
+                    description: 'My description...',
+                    number: '${DateTime.now().year}-9999',
+                  ),
+                  items: [
+                    InvoiceItem(
+                      description: 'Coffee',
+                      date: DateTime.now(),
+                      quantity: 3,
+                      vat: 0.19,
+                      unitPrice: 5.99,
+                    ),
+                    InvoiceItem(
+                      description: 'Water',
+                      date: DateTime.now(),
+                      quantity: 8,
+                      vat: 0.19,
+                      unitPrice: 0.99,
+                    ),
+                    InvoiceItem(
+                      description: 'Orange',
+                      date: DateTime.now(),
+                      quantity: 3,
+                      vat: 0.19,
+                      unitPrice: 2.99,
+                    ),
+                    InvoiceItem(
+                      description: 'Apple',
+                      date: DateTime.now(),
+                      quantity: 8,
+                      vat: 0.19,
+                      unitPrice: 3.99,
+                    ),
+                    InvoiceItem(
+                      description: 'Mango',
+                      date: DateTime.now(),
+                      quantity: 1,
+                      vat: 0.19,
+                      unitPrice: 1.59,
+                    ),
+                    InvoiceItem(
+                      description: 'Blue Berries',
+                      date: DateTime.now(),
+                      quantity: 5,
+                      vat: 0.19,
+                      unitPrice: 0.99,
+                    ),
+                    InvoiceItem(
+                      description: 'Lemon',
+                      date: DateTime.now(),
+                      quantity: 4,
+                      vat: 0.19,
+                      unitPrice: 1.29,
+                    ),
+                  ],
+                );
+
+                final pdfFile = await PdfInvoiceApi.generate(invoice);
+
+                PdfApi.openFile(pdfFile); */
+
+                final pdf = pw.Document();
+
+                pdf.addPage(
+                  pw.Page(
+                    build: (pw.Context context) => pw.Center(
+                      child: pw.Text('Hello World!'),
+                    ),
+                  ),
+                );
+
+                final file = File('example.pdf');
+                await file.writeAsBytes(await pdf.save());
+              },
+              child: const Text('Gerar Fatura'),
             )
           ],
         ),

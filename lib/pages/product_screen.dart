@@ -2,7 +2,6 @@ import 'package:barraca_app/controllers/product_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/new_product_screen.dart';
-import 'package:get/get.dart';
 import 'package:uno/uno.dart';
 
 class ProductCreen extends StatefulWidget {
@@ -31,12 +30,6 @@ class _ProductCreenState extends State<ProductCreen> {
 
   @override
   Widget build(BuildContext context) {
-/*     double totalPrice = 0.0;
-    currentUser.cart.forEach((Order order) {
-      totalPrice += order.food.price * order.quantity;
-    });
- */ // Instantiate your class using Get.put() to make it available for all "child" routes there.
-
     return Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: Colors.grey.shade100,
@@ -148,7 +141,7 @@ class _ProductCreenState extends State<ProductCreen> {
                             child: const Text('Sim'),
                             onPressed: () async {
                               Navigator.of(ctx).pop(true);
-                              var res = await ProductController()
+                              await ProductController()
                                   .productDelete(product['id']);
                               productList();
                             },

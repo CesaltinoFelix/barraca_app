@@ -1,6 +1,4 @@
 import 'package:barraca_app/controllers/product_controller.dart';
-import 'package:barraca_app/data/data.dart';
-import 'package:barraca_app/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/qr_code.dart';
 import 'package:uno/uno.dart';

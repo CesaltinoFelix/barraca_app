@@ -4,8 +4,11 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:barraca_app/main.dart';
 import 'package:barraca_app/utils/constants.dart';
 import 'package:barraca_app/components/profile_list_item.dart';
+import 'package:barraca_app/controllers/user_controller.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
+  final UserController userController = Get.find<UserController>();
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(
@@ -27,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
               children: <Widget>[
                 CircleAvatar(
                   radius: kSpacingUnit.w * 5,
-                  backgroundImage: AssetImage('assets/images/avatar.jpeg'),
+                  backgroundImage: AssetImage('assets/images/profile-1.png'),
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
@@ -133,10 +136,8 @@ class ProfileScreen extends StatelessWidget {
                   text: 'Logout',
                   hasNavigation: false,
                   onPress: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WelcomeScreen()));
+                    userController.logout();
+                    Get.off(WelcomeScreen());
                   },
                 ),
               ],
