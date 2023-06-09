@@ -19,8 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
   final UserController userController = Get.find<UserController>();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final uno = Uno();
   String? _emailValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -136,7 +136,8 @@ class _LoginPageState extends State<LoginPage> {
 
                       if (response.statusCode == 200) {
                         // Redirecionar para a tela inicial
-                        var responseData = json.decode(response.body);
+                        var responseData = await json.decode(response.body);
+
                         userController.login(responseData['id'].toString(),
                             responseData['name'], email, responseData['img']);
 

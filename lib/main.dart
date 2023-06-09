@@ -1,13 +1,15 @@
 import 'package:barraca_app/controllers/user_controller.dart';
+import 'package:barraca_app/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:barraca_app/pages/login.dart';
 import 'package:get/get.dart';
 import 'package:barraca_app/utils/constants.dart';
 
-void main() {
+void main() async {
   final UserController userController = Get.put(UserController());
-
+  userController.verifyLogin();
+  String userId = await userController.loadData('email');
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -35,7 +37,7 @@ void main() {
         ),
       ),
     ),
-    home: WelcomeScreen(),
+    home: userId != '' ? HomeScreen() : WelcomeScreen(),
   ));
 }
 

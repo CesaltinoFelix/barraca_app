@@ -28,10 +28,17 @@ class ProfileScreen extends StatelessWidget {
             margin: EdgeInsets.only(top: kSpacingUnit.w * 3),
             child: Stack(
               children: <Widget>[
-                CircleAvatar(
-                  radius: kSpacingUnit.w * 5,
-                  backgroundImage: AssetImage('assets/images/profile-1.png'),
-                ),
+                userController.email.value == 'cesaltinofelix2000@gmail.com'
+                    ? CircleAvatar(
+                        radius: kSpacingUnit.w * 5,
+                        backgroundImage:
+                            AssetImage('assets/images/avatar.jpeg'),
+                      )
+                    : CircleAvatar(
+                        radius: kSpacingUnit.w * 5,
+                        backgroundImage:
+                            AssetImage('assets/images/profile-1.png'),
+                      ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
