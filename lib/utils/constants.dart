@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+const Color primaryColor = Color(0xFFF2994A);
+
 OutlineInputBorder defaultOutlineInputBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(14),
   borderSide: const BorderSide(color: Color(0xFFF3F3F3)),

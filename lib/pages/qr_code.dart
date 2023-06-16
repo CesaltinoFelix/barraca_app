@@ -1,8 +1,10 @@
+import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/pages/home_screen.dart';
+import 'package:barraca_app/pages/PDFViewerPage.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:io';
 
@@ -19,6 +21,8 @@ class _QrCodePageState extends State<QrCodePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        actions: [],
+        automaticallyImplyLeading: false,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
           "Referência de Pagamento",
@@ -35,7 +39,7 @@ class _QrCodePageState extends State<QrCodePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              ' Aponta a camera do seu telemovel para seres redirecionado a tela de pagamento. \nSeu QR code é privado. ',
+              ' Aponta a camera do seu telemovel para seres redirecionado a tela de pagamento.',
               style: TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -137,19 +141,12 @@ class _QrCodePageState extends State<QrCodePage> {
                 final pdfFile = await PdfInvoiceApi.generate(invoice);
 
                 PdfApi.openFile(pdfFile); */
-
-                final pdf = pw.Document();
-
-                pdf.addPage(
-                  pw.Page(
-                    build: (pw.Context context) => pw.Center(
-                      child: pw.Text('Hello World!'),
-                    ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PDFViewerPage(),
                   ),
                 );
-
-                final file = File('example.pdf');
-                await file.writeAsBytes(await pdf.save());
               },
               child: const Text('Gerar Fatura'),
             )

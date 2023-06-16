@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:barraca_app/controllers/product_controller.dart';
 import 'package:barraca_app/pages/home_screen.dart';
+import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
@@ -86,7 +87,8 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                  backgroundColor: primaryColor, color: primaryColor),
             )
           : SingleChildScrollView(
               child: Form(
@@ -159,11 +161,11 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
                                   const Size(double.infinity, 48)),
                             ),
                             child: Text(
-                              "Salvar Producto",
+                              "Salvar Produto",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                  color: Colors.black),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                           SizedBox(

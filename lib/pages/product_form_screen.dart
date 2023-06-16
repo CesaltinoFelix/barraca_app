@@ -1,19 +1,22 @@
 import 'dart:io';
 
 import 'package:barraca_app/controllers/product_controller.dart';
+import 'package:barraca_app/helpers/snackbar_menssage.dart';
 import 'package:barraca_app/pages/home_screen.dart';
+import 'package:barraca_app/components/photo_modal.dart';
+import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uno/uno.dart';
 import 'package:get/get.dart';
 
-class NewProductScreen extends StatefulWidget {
+class ProductFormScreen extends StatefulWidget {
   @override
-  State<NewProductScreen> createState() => _NewProductScreenState();
+  State<ProductFormScreen> createState() => _ProductFormScreenState();
 }
 
-class _NewProductScreenState extends State<NewProductScreen> {
+class _ProductFormScreenState extends State<ProductFormScreen> {
   final _formData = <String, Object>{};
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
@@ -21,10 +24,17 @@ class _NewProductScreenState extends State<NewProductScreen> {
   File? _image;
   final _picker = ImagePicker();
   XFile? pickedImage;
+  dynamic product = {};
   // Implementing the image picker
-  Future<void> _openImagePicker() async {
+  Future<void> _openImagePicker(String type) async {
     XFile? auxPickedImage;
-    auxPickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    if (type == 'gallery') {
+      // Lógica para carregar da galeria
+      auxPickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    } else if (type == 'camera') {
+      // Lógica para fazer uma foto
+      auxPickedImage = await _picker.pickImage(source: ImageSource.camera);
+    }
     setState(() {
       pickedImage = auxPickedImage;
     });
@@ -37,56 +47,105 @@ class _NewProductScreenState extends State<NewProductScreen> {
   }
 
   Future<void> _submitForm() async {
-    /*    final isValid = _formKey.currentState?.validate() ?? false;
-
+    final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
       return;
-    } */
+    }
     _formKey.currentState?.save();
 
     setState(() => _isLoading = true);
-    try {
-      await ProductController().saveProduct(
-          context: context, data: _formData, pickedImage: pickedImage);
-      // Navigator.of(context).pop();
+    if (product?['id'] != null) {
+      await ProductController().updateProduct(
+          context: context,
+          id: product?['id'],
+          data: _formData,
+          pickedImage: pickedImage);
+      SnackbarMenssage().nasckProductUpdateSuccess(context);
       Get.to(HomeScreen());
-    } catch (error) {
-      await showDialog<void>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Ocorreu um erro!'),
-          content: const Text('Ocorreu um erro para salvar o produto.'),
-          actions: [
-            TextButton(
-              child: const Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      setState(() => _isLoading = false);
+    } else {
+      try {
+        await ProductController().saveProduct(
+            context: context, data: _formData, pickedImage: pickedImage);
+        SnackbarMenssage().nasckProductSuccess(context);
+
+        Get.to(HomeScreen());
+      } catch (error) {
+        await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Ocorreu um erro!'),
+            content: const Text('Ocorreu um erro para salvar o produto.'),
+            actions: [
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      product = Get?.arguments;
+    });
+    super.initState();
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Campo obrigatório';
+    }
+    return null;
+  }
+
+  String? _validatePrice(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Campo obrigatório';
+    }
+    if (value == '0') {
+      return 'Valor precisa ser superior que 0kz';
+    }
+
+    // Verifica se o valor contém apenas dígitos ou ponto decimal
+    if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
+      return 'Apenas números e ponto são permitidos';
+    }
+
+    return null;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(product?['id']);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Novo Produto",
-          style: TextStyle(color: Colors.black),
-        ),
+        title: product == null
+            ? const Text(
+                "Novo Produto",
+                style: TextStyle(color: Colors.black),
+              )
+            : const Text(
+                "Actualizar Produto",
+                style: TextStyle(color: Colors.black),
+              ),
         elevation: 1,
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                  backgroundColor: primaryColor, color: primaryColor),
             )
           : SingleChildScrollView(
               child: Form(
@@ -103,19 +162,24 @@ class _NewProductScreenState extends State<NewProductScreen> {
                       Column(
                         children: <Widget>[
                           makeInput(
+                              value: product?['name'],
                               label: "Nome",
-                              onSaved: (name) =>
-                                  _formData['name'] = name ?? ''),
+                              onSaved: (name) => _formData['name'] = name ?? '',
+                              validator: _validateName),
                           makeInput(
+                              value: product?['price'],
                               label: "Preço",
                               obscureText: false,
                               onSaved: (price) =>
-                                  _formData['price'] = price ?? ''),
+                                  _formData['price'] = price ?? '',
+                              validator: _validatePrice),
                           makeInput(
+                              value: product?['description'],
                               label: "Descrição",
                               obscureText: false,
                               onSaved: (description) =>
-                                  _formData['description'] = description ?? ''),
+                                  _formData['description'] = description ?? '',
+                              validator: null),
                           Container(
                             alignment: Alignment.centerLeft,
                             child: Column(
@@ -139,8 +203,19 @@ class _NewProductScreenState extends State<NewProductScreen> {
                                         Radius.circular(8)),
                                   ),
                                   child: GestureDetector(
-                                      child: makeInputImg(),
-                                      onTap: _openImagePicker),
+                                    child: makeInputImg(),
+                                    onTap: () async {
+                                      String? result = await showDialog<String>(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            PhotoModal(),
+                                      );
+                                      // Aqui você pode usar a variável 'result' para tomar a ação adequada
+                                      result != null
+                                          ? _openImagePicker(result!)
+                                          : null;
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -159,11 +234,11 @@ class _NewProductScreenState extends State<NewProductScreen> {
                                   const Size(double.infinity, 48)),
                             ),
                             child: Text(
-                              "Salvar Producto",
+                              "Salvar Produto",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                  color: Colors.black),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -179,7 +254,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
     );
   }
 
-  Widget makeInput({label, obscureText = false, onSaved}) {
+  Widget makeInput({value, label, obscureText = false, onSaved, validator}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -192,6 +267,8 @@ class _NewProductScreenState extends State<NewProductScreen> {
           height: 5,
         ),
         TextFormField(
+          initialValue: value != null ? value.toString() : '',
+          validator: validator,
           onSaved: onSaved,
           obscureText: obscureText,
           cursorColor: Colors.orange.shade300,

@@ -9,7 +9,7 @@ import 'package:barraca_app/utils/constants.dart';
 void main() async {
   final UserController userController = Get.put(UserController());
   userController.verifyLogin();
-  String userId = await userController.loadData('email');
+  String userId = await userController.loadData('id');
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -65,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    "Verificação automática de identidade que permite verificar sua identidade",
+                    "Verificação automática de dados que permite verificar sua identidade",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[700], fontSize: 15),
                   ),

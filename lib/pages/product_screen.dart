@@ -1,8 +1,9 @@
 import 'package:barraca_app/controllers/product_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:flutter/material.dart';
-import 'package:barraca_app/pages/new_product_screen.dart';
+import 'package:barraca_app/pages/product_form_screen.dart';
 import 'package:uno/uno.dart';
+import 'package:get/get.dart';
 
 class ProductCreen extends StatefulWidget {
   const ProductCreen({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _ProductCreenState extends State<ProductCreen> {
               icon: const Icon(Icons.add),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => NewProductScreen()));
+                    builder: (context) => ProductFormScreen()));
               },
             )
           ],
@@ -117,10 +118,7 @@ class _ProductCreenState extends State<ProductCreen> {
                   icon: const Icon(Icons.edit),
                   color: Theme.of(context).colorScheme.primary,
                   onPressed: () {
-                    /*  Navigator.of(context).pushNamed(
-                  AppRoutes.productForm,
-                  arguments: product, 
-                );*/
+                    Get.to(ProductFormScreen(), arguments: product);
                   },
                 ),
                 IconButton(

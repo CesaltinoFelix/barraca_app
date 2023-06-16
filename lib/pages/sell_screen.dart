@@ -1,9 +1,13 @@
 import 'package:barraca_app/controllers/product_controller.dart';
+import 'package:barraca_app/helpers/snackbar_menssage.dart';
+import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:barraca_app/pages/qr_code.dart';
 import 'package:uno/uno.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/controllers/sale_controller.dart';
+import 'package:barraca_app/controllers/user_controller.dart';
+import 'package:get/get.dart';
 
 class SellCreen extends StatefulWidget {
   const SellCreen({Key? key}) : super(key: key);
@@ -14,9 +18,9 @@ class SellCreen extends StatefulWidget {
 
 class SelltCreenState extends State<SellCreen> {
   List<dynamic> myOrder = [];
-
   final uno = Uno();
   List<dynamic>? products;
+  bool _isLoading = false;
   productList() async {
     var res = await ProductController().productList();
     if (res.data is List<dynamic>) {
@@ -28,7 +32,15 @@ class SelltCreenState extends State<SellCreen> {
 
   @override
   initState() {
-    productList();
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      productList();
+    } catch (e) {
+    } finally {
+      _isLoading = false;
+    }
     super.initState();
   }
 
@@ -45,112 +57,123 @@ class SelltCreenState extends State<SellCreen> {
       totalPrice += order['price'] * order['quantity'];
     });
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Vender",
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 1,
-        centerTitle: true,
-        backgroundColor: Colors.white,
-      ),
-      body: products != null
-          ? ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                if (index < products!.length) {
-                  Map<String, dynamic> product = products![index];
-                  return _buildCart(product, myOrder, loadUi);
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          /* Text(
-                            "Produtos Selecionados",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            myOrder?.length != null ? "${myOrder.length}" : "0",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ) */
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Valor Total",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "\Kz${totalPrice.toStringAsFixed(2)}",
-                            style: TextStyle(
-                                color: Colors.green.shade700,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 80)
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(thickness: 1.0, color: Colors.grey),
-              itemCount: products!.length + 1)
-          : Container(),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(10),
-        child: GestureDetector(
-          onTap: () {
-            myOrder.forEach((order) {
-              SaleController().saveSales(data: order, context: context);
-            });
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QrCodePage()));
-          },
-          child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-                color: Colors.orange.shade300,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: const [
-                  BoxShadow(
-                      blurRadius: 6,
-                      color: Colors.black26,
-                      offset: Offset(0, -1))
-                ]),
-            child: const Center(
-              child: Text(
-                "CHECKOUT",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                backgroundColor: primaryColor, color: primaryColor),
+          )
+        : Scaffold(
+            backgroundColor: Colors.grey.shade100,
+            appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.black),
+              title: const Text(
+                "Vender",
+                style: TextStyle(color: Colors.black),
               ),
+              elevation: 1,
+              centerTitle: true,
+              backgroundColor: Colors.white,
             ),
-          ),
-        ),
-      ),
-    );
+            body: products != null
+                ? Column(
+                    children: [
+                      Container(
+                        height: 600,
+                        width: double.infinity,
+                        child: ListView.separated(
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index < products!.length) {
+                                Map<String, dynamic> product = products![index];
+                                return _buildCart(product, myOrder, loadUi);
+                              }
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Divider(
+                                        thickness: 1.0, color: Colors.grey),
+                            itemCount: products!.length + 1),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Produtos Selecionados",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  myOrder?.length != null
+                                      ? "${myOrder.length}"
+                                      : "0",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Valor Total",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "\Kz${totalPrice.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                      color: Colors.green.shade700,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 50)
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                : Container(),
+            bottomSheet: Padding(
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (myOrder.isEmpty) {
+                      const SnackbarMenssage().nasckProductInfo(context);
+                    } else {
+                      myOrder.forEach((order) {
+                        SaleController()
+                            .saveSales(data: order, context: context);
+                      });
+                      const SnackbarMenssage().nasckSalesSuccess(context);
+                      Get.off(QrCodePage());
+                    }
+                  },
+                  style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(
+                        const Size(double.infinity, 48)),
+                  ),
+                  child: const Text(
+                    'Concluir',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                  ),
+                )),
+          );
   }
 
 //Criando os widgets de compras

@@ -142,7 +142,7 @@ Widget myDrawer(userController) {
                   ),
           ),
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.blue.shade300,
             image: DecorationImage(
                 fit: BoxFit.fill,
                 image: AssetImage('assets/images/profile-bg1.jpg')),
@@ -158,7 +158,7 @@ Widget myDrawer(userController) {
         ),
         ListTile(
           leading: Icon(Icons.edit_outlined),
-          title: Text('Costumizar'),
+          title: Text('Costumizar Produto'),
           onTap: () {
             Get.back();
             Get.to(PersonalizeScreen());
@@ -166,7 +166,7 @@ Widget myDrawer(userController) {
         ),
         ListTile(
           leading: Icon(Icons.attach_money_outlined),
-          title: Text('Vendas'),
+          title: Text('Estado das Vendas'),
           onTap: () {
             Get.back();
             Get.to(ProductCreen());

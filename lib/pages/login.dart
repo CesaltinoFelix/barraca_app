@@ -1,6 +1,7 @@
 import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/pages/home_screen.dart';
+import 'package:barraca_app/pages/register.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -126,13 +127,12 @@ class _LoginPageState extends State<LoginPage> {
                       // Extrair dados do formulário
                       String email = _emailController.text;
                       String password = _passwordController.text;
-
                       // Fazer a consulta na API
-                      http.Response response =
-                          await http.post(Uri.parse('$baseUrl/login'), body: {
-                        'email': email,
-                        'password': password,
-                      });
+                      // print('$baseUrl/login');
+
+                      var response = await http.get(
+                          Uri.parse('$baseUrl/login/${email}/${password}'));
+                      // return print(response);
 
                       if (response.statusCode == 200) {
                         // Redirecionar para a tela inicial
@@ -163,7 +163,13 @@ class _LoginPageState extends State<LoginPage> {
                     minimumSize: MaterialStateProperty.all(
                         const Size(double.infinity, 48)),
                   ),
-                  child: const Text('Entrar'),
+                  child: const Text(
+                    'Entrar',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 RichText(
@@ -177,6 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             // Implementar ação de cadastro
+                            Get.to(RegisterPage());
                           },
                       ),
                     ],
