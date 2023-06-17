@@ -25,14 +25,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _picker = ImagePicker();
   XFile? pickedImage;
   dynamic product = {};
-  // Implementing the image picker
+
+  // Função para abrir o seletor de imagem
   Future<void> _openImagePicker(String type) async {
     XFile? auxPickedImage;
     if (type == 'gallery') {
-      // Lógica para carregar da galeria
       auxPickedImage = await _picker.pickImage(source: ImageSource.gallery);
     } else if (type == 'camera') {
-      // Lógica para fazer uma foto
       auxPickedImage = await _picker.pickImage(source: ImageSource.camera);
     }
     setState(() {
@@ -46,6 +45,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     }
   }
 
+  // Função para submeter o formulário
   Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
@@ -67,14 +67,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         await ProductController().saveProduct(
             context: context, data: _formData, pickedImage: pickedImage);
         SnackbarMenssage().nasckProductSuccess(context);
-
         Get.to(HomeScreen());
       } catch (error) {
         await showDialog<void>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Ocorreu um erro!'),
-            content: const Text('Ocorreu um erro para salvar o produto.'),
+            title: const Text('Erro'),
+            content: const Text('Ocorreu um erro ao salvar o produto.'),
             actions: [
               TextButton(
                 child: const Text('Ok'),
@@ -91,13 +90,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     setState(() {
       product = Get?.arguments;
     });
     super.initState();
   }
 
+  // Função de validação para o campo 'Nome'
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Campo obrigatório';
@@ -105,25 +104,22 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return null;
   }
 
+  // Função de validação para o campo 'Preço'
   String? _validatePrice(String? value) {
     if (value == null || value.isEmpty) {
       return 'Campo obrigatório';
     }
     if (value == '0') {
-      return 'Valor precisa ser superior que 0kz';
+      return 'O valor deve ser maior que 0 Kz';
     }
-
-    // Verifica se o valor contém apenas dígitos ou ponto decimal
     if (!RegExp(r'^\d+(\.\d+)?$').hasMatch(value)) {
       return 'Apenas números e ponto são permitidos';
     }
-
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    print(product?['id']);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey.shade100,
@@ -135,7 +131,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                 style: TextStyle(color: Colors.black),
               )
             : const Text(
-                "Actualizar Produto",
+                "Atualizar Produto",
                 style: TextStyle(color: Colors.black),
               ),
         elevation: 1,
@@ -144,8 +140,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(
-                  backgroundColor: primaryColor, color: primaryColor),
+              child: CircularProgressIndicator(color: primaryColor),
             )
           : SingleChildScrollView(
               child: Form(
@@ -210,7 +205,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                                         builder: (BuildContext context) =>
                                             PhotoModal(),
                                       );
-                                      // Aqui você pode usar a variável 'result' para tomar a ação adequada
                                       result != null
                                           ? _openImagePicker(result!)
                                           : null;
@@ -254,14 +248,24 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     );
   }
 
-  Widget makeInput({value, label, obscureText = false, onSaved, validator}) {
+  // Widget para criar o campo de entrada de texto
+  Widget makeInput({
+    value,
+    label,
+    obscureText = false,
+    onSaved,
+    validator,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           label,
           style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w400, color: Colors.black87),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: Colors.black87,
+          ),
         ),
         SizedBox(
           height: 5,
@@ -274,12 +278,15 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           cursorColor: Colors.orange.shade300,
           decoration: InputDecoration(
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange.shade300)),
+              borderSide: BorderSide(color: Colors.orange.shade300),
+            ),
             contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade400)),
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
             border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey.shade400)),
+              borderSide: BorderSide(color: Colors.grey.shade400),
+            ),
           ),
         ),
         SizedBox(
@@ -289,19 +296,20 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     );
   }
 
+  // Widget para exibir a imagem selecionada ou um espaço reservado
   Widget makeInputImg() {
     return _image == null
         ? Image.asset(
+            'assets/images/image_placeholder.jpg',
             height: 100,
             width: 100,
             fit: BoxFit.fill,
-            "assets/images/image_placeholder.jpg",
           )
         : Image.file(
+            _image!,
             height: 100,
             width: 100,
             fit: BoxFit.cover,
-            _image!,
           );
   }
 }

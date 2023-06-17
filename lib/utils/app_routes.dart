@@ -7,6 +7,6 @@ class AppRoutes {
 
   static ProductRoute(context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: ((ctx) => ProductCreen())));
+        context, MaterialPageRoute(builder: ((ctx) => ProductScreen())));
   }
 }

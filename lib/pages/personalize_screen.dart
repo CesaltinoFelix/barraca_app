@@ -87,8 +87,7 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(
-                  backgroundColor: primaryColor, color: primaryColor),
+              child: CircularProgressIndicator(color: primaryColor),
             )
           : SingleChildScrollView(
               child: Form(

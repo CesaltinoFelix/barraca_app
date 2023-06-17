@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/helpers/snackbar_menssage.dart';
@@ -6,70 +8,35 @@ import 'package:barraca_app/pages/login.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:uno/uno.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key});
 
   @override
-  State<RegisterPage> createState() => RegisternPageState();
+  State<RegisterPage> createState() => RegisterPageState();
 }
 
-class RegisternPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _obscureText = true;
-  final UserController userController = Get.find<UserController>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _passwordConfirmController =
-      TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _nifController = TextEditingController();
-  final TextEditingController _contactController = TextEditingController();
-  final uno = Uno();
-  String? _emailValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor, insira seu e-mail';
-    }
-    if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-        .hasMatch(value)) {
-      return 'Por favor, insira um e-mail válido';
-    }
-    return null;
-  }
+  final _obscureText = true.obs;
+  final userController = Get.find<UserController>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _passwordConfirmController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _nifController = TextEditingController();
+  final _contactController = TextEditingController();
 
-  String? _passwordValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Por favor, insira sua senha';
-    }
-    return null;
-  }
-
-  String? _validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Campo obrigatório';
-    }
-    return null;
-  }
-
-  String? _validateNif(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Campo obrigatório';
-    }
-    return null;
-  }
-
-  String? _validateContact(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Campo obrigatório';
-    }
-    // Verifica se o valor contém exatamente 9 dígitos
-    if (!RegExp(r'^\d{9}$').hasMatch(value)) {
-      return 'Deve conter exatamente 9 dígitos';
-    }
-    return null;
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _passwordConfirmController.dispose();
+    _nameController.dispose();
+    _nifController.dispose();
+    _contactController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,184 +67,76 @@ class RegisternPageState extends State<RegisterPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Nome',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'Nome',
+                        hintText: 'Digite seu nome',
                         controller: _nameController,
+                        validator: _validateName,
                         keyboardType: TextInputType.name,
                         textInputAction: TextInputAction.next,
-                        decoration:
-                            const InputDecoration(hintText: 'Digite seu nome'),
-                        validator: _validateName,
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'NIF/BI',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'NIF/BI',
+                        hintText: 'Digite seu NIF ou número do BI',
                         controller: _nifController,
+                        validator: _validateNif,
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                            hintText: 'Digite seu NIF ou numero do BI'),
-                        validator: _validateNif,
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'E-mail',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'E-mail',
+                        hintText: 'Digite seu e-mail',
                         controller: _emailController,
+                        validator: _emailValidator,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                            hintText: 'Digite seu e-mail'),
-                        validator: _emailValidator,
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'Telemovel',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'Telemóvel',
+                        hintText: 'Digite seu número',
                         controller: _contactController,
-                        maxLength: 9,
+                        validator: _validateContact,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                            hintText: 'Digite seu numero'),
-                        validator: _validateContact,
+                        maxLength: 9,
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'Senha',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'Senha',
+                        hintText: 'Digite sua senha',
                         controller: _passwordController,
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: 'Digite sua senha',
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureText
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
                         validator: _passwordValidator,
+                        obscureText: _obscureText.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureText.value
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () => _obscureText.toggle(),
+                        ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'Confirmar Senha',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
+                      _buildFormField(
+                        label: 'Confirmar Senha',
+                        hintText: 'Confirme sua senha',
                         controller: _passwordConfirmController,
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: 'Confirme sua senha',
-                          suffixIcon: IconButton(
-                            icon: Icon(_obscureText
-                                ? Icons.visibility_off
-                                : Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
                         validator: _passwordValidator,
+                        obscureText: _obscureText.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureText.value
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () => _obscureText.toggle(),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // Extrair dados do formulário
-                      String email = _emailController.text;
-                      String name = _nameController.text;
-                      String nif = _nifController.text;
-                      String contact = _contactController.text;
-                      String password = _passwordController.text;
-                      String passwordConfirm = _passwordConfirmController.text;
-                      if (password != passwordConfirm) {
-                        const SnackbarMenssage()
-                            .nasckRegisterDistinctPasswordInfo(context);
-                        return;
-                      }
-
-                      final requestCostumerBody = {
-                        'name': name,
-                        'nif': nif,
-                        'email': email,
-                        'contact': contact,
-                      };
-
-                      var CostumerResponse = await http.post(
-                          Uri.parse('$baseUrl/costumers'),
-                          body: requestCostumerBody);
-                      // return print(response);
-
-                      if (CostumerResponse.statusCode == 200) {
-                        // Redirecionar para a tela inicial
-                        var responseCostumerData =
-                            await json.decode(CostumerResponse.body);
-                        final requestUserBody = {
-                          'name': name,
-                          'password': password,
-                          'email': email,
-                          'entityId': responseCostumerData['id'].toString(),
-                        };
-                        var response = await http.post(
-                            Uri.parse('$baseUrl/users'),
-                            body: requestUserBody);
-
-                        var responseUserData = await json.decode(response.body);
-
-                        userController.login(
-                            responseUserData['id'].toString(),
-                            responseUserData['name'],
-                            email,
-                            responseUserData['img']);
-                        SnackbarMenssage().nasckRegisterSuccess(context, name);
-                        Get.offAll(HomeScreen());
-                      } else {
-                        // Exibir mensagem de erro ou tratar falha no login
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                                'Erro ao registar, tente mais tarde!'),
-                            duration: const Duration(milliseconds: 2000),
-                            backgroundColor: Colors.red.shade400,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
+                  onPressed: _registerUser,
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(
                         const Size(double.infinity, 48)),
@@ -301,7 +160,6 @@ class RegisternPageState extends State<RegisterPage> {
                         style: const TextStyle(color: Color(0xFF3D80DE)),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            // Implementar ação de login
                             Get.to(LoginPage());
                           },
                       ),
@@ -314,5 +172,166 @@ class RegisternPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildFormField({
+    required String label,
+    required String hintText,
+    required TextEditingController controller,
+    required String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    int? maxLength,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          maxLength: maxLength,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            hintText: hintText,
+            suffixIcon: suffixIcon,
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Digite seu nome';
+    }
+    return null;
+  }
+
+  String? _validateNif(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Digite seu NIF ou número do BI';
+    }
+    return null;
+  }
+
+  String? _emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Digite seu e-mail';
+    }
+    if (!GetUtils.isEmail(value)) {
+      return 'E-mail inválido';
+    }
+    return null;
+  }
+
+  String? _validateContact(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Digite seu número de telemóvel';
+    }
+    if (value.length < 9) {
+      return 'Número de telemóvel inválido';
+    }
+    return null;
+  }
+
+  String? _passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Digite sua senha';
+    }
+    if (value.length < 6) {
+      return 'A senha deve conter pelo menos 6 caracteres';
+    }
+    return null;
+  }
+
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      final email = _emailController.text;
+      final name = _nameController.text;
+      final nif = _nifController.text;
+      final contact = _contactController.text;
+      final password = _passwordController.text;
+      final passwordConfirm = _passwordConfirmController.text;
+
+      if (password != passwordConfirm) {
+        SnackbarMenssage().nasckRegisterDistinctPasswordInfo(context);
+        return;
+      }
+
+      final requestCostumerBody = {
+        'name': name,
+        'nif': nif,
+        'email': email,
+        'contact': contact,
+      };
+
+      try {
+        final costumerResponse = await http.post(
+          Uri.parse('$baseUrl/costumers'),
+          body: requestCostumerBody,
+        );
+
+        if (costumerResponse.statusCode == 200) {
+          final responseCostumerData = json.decode(costumerResponse.body);
+          final requestUserBody = {
+            'name': name,
+            'password': password,
+            'email': email,
+            'entityId': responseCostumerData['id'].toString(),
+          };
+
+          final response = await http.post(
+            Uri.parse('$baseUrl/users'),
+            body: requestUserBody,
+          );
+
+          final responseUserData = json.decode(response.body);
+
+          userController.login(
+            responseUserData['id'].toString(),
+            responseUserData['name'],
+            email,
+            responseUserData['img'],
+          );
+
+          SnackbarMenssage().nasckRegisterSuccess(context, name);
+          Get.offAll(HomeScreen());
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  const Text('Erro ao registrar, tente novamente mais tarde!'),
+              duration: const Duration(milliseconds: 2000),
+              backgroundColor: Colors.red.shade400,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          );
+        }
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Erro ao conectar ao servidor'),
+            duration: const Duration(milliseconds: 2000),
+            backgroundColor: Colors.red.shade400,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
+        );
+      }
+    }
   }
 }

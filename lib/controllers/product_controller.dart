@@ -45,7 +45,7 @@ class ProductController extends GetxController {
     };
     try {
       await uno
-          .post('${baseUrl}/product-update/$id', data: product)
+          .put('${baseUrl}/product-update/$id', data: product)
           .then((response) {
         if (pickedImage!.path != null) {
           var res = ImageUploader()

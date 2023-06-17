@@ -62,8 +62,7 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
             ),
           if (_isLoading)
             Center(
-              child: const CircularProgressIndicator(
-                  backgroundColor: primaryColor, color: primaryColor),
+              child: const CircularProgressIndicator(color: primaryColor),
             ),
         ],
       ),

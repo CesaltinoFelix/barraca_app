@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final uno = Uno();
+
   String? _emailValidator(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor, insira seu e-mail';
@@ -127,12 +128,10 @@ class _LoginPageState extends State<LoginPage> {
                       // Extrair dados do formulário
                       String email = _emailController.text;
                       String password = _passwordController.text;
-                      // Fazer a consulta na API
-                      // print('$baseUrl/login');
 
+                      // Fazer a consulta na API
                       var response = await http.get(
                           Uri.parse('$baseUrl/login/${email}/${password}'));
-                      // return print(response);
 
                       if (response.statusCode == 200) {
                         // Redirecionar para a tela inicial
