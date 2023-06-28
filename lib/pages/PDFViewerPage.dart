@@ -1,6 +1,8 @@
+import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -13,16 +15,23 @@ class PDFViewerPage extends StatefulWidget {
 class _PDFViewerPageState extends State<PDFViewerPage> {
   bool _isLoading = true;
   String? _pdfPath;
+  String codigoFatura = '';
 
   @override
   void initState() {
     super.initState();
-    downloadPDF();
+    setState(() {
+      codigoFatura = Get?.arguments;
+    });
+
+    if (codigoFatura != '') {
+      downloadPDF();
+    }
   }
 
   Future<void> downloadPDF() async {
-    final url = 'http://www.pdf995.com/samples/pdf.pdf';
-
+    final url = '$baseUrl/fatura_$codigoFatura.pdf';
+    print(url);
     final response = await http.get(Uri.parse(url));
     final documentsDirectory = await getApplicationDocumentsDirectory();
     final filePath = '${documentsDirectory.path}/pdf.pdf';
@@ -40,7 +49,10 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Visualizador de PDF'),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+        title: Text('Fatura', style: TextStyle(color: Colors.black)),
       ),
       body: Stack(
         children: [
@@ -62,7 +74,7 @@ class _PDFViewerPageState extends State<PDFViewerPage> {
             ),
           if (_isLoading)
             Center(
-              child: const CircularProgressIndicator(color: primaryColor),
+              child: const CircularProgressIndicator(color: kPrimaryColor),
             ),
         ],
       ),

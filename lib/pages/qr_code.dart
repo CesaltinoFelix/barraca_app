@@ -16,6 +16,17 @@ class QrCodePage extends StatefulWidget {
 }
 
 class _QrCodePageState extends State<QrCodePage> {
+  String codigoFatura = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    setState(() {
+      codigoFatura = Get?.arguments;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,12 +152,7 @@ class _QrCodePageState extends State<QrCodePage> {
                 final pdfFile = await PdfInvoiceApi.generate(invoice);
 
                 PdfApi.openFile(pdfFile); */
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PDFViewerPage(),
-                  ),
-                );
+                Get.to(PDFViewerPage(), arguments: codigoFatura);
               },
               child: const Text('Gerar Fatura'),
             )

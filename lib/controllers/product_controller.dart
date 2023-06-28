@@ -1,6 +1,5 @@
 import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
-import 'package:barraca_app/helpers/snackbar_menssage.dart';
 import 'package:barraca_app/services/image_uploader.dart';
 import 'package:get/get.dart';
 import 'package:uno/uno.dart';

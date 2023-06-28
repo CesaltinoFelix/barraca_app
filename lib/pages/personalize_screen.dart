@@ -9,6 +9,9 @@ import 'package:lottie/lottie.dart';
 import 'package:uno/uno.dart';
 import 'package:get/get.dart';
 
+import '../components/defaultBackButton.dart';
+import '../components/default_app_bar.dart';
+
 class PersonalizeScreen extends StatefulWidget {
   @override
   State<PersonalizeScreen> createState() => _PersonalizeScreenState();
@@ -74,20 +77,14 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Personalizar Produto",
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 1,
-        centerTitle: true,
-        backgroundColor: Colors.white,
+      backgroundColor: kWhiteColor,
+      appBar: const DefaultAppBar(
+        title: "Personalizar Produto",
+        child: DefaultBackButton(),
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: primaryColor),
+              child: CircularProgressIndicator(color: kPrimaryColor),
             )
           : SingleChildScrollView(
               child: Form(
@@ -99,7 +96,7 @@ class _PersonalizeScreenState extends State<PersonalizeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Container(
-                          height: MediaQuery.of(context).size.height / 3,
+                          height: MediaQuery.of(context).size.height / 4,
                           child: Lottie.asset('assets/images/shopping.json')),
                       Column(
                         children: <Widget>[

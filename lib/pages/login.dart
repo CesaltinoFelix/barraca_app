@@ -79,8 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                            hintText: 'Digite seu e-mail'),
+                        decoration: const InputDecoration(),
                         validator: _emailValidator,
                       ),
                       const SizedBox(height: 24),
@@ -93,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
-                          hintText: 'Digite sua senha',
                           suffixIcon: IconButton(
                             icon: Icon(_obscureText
                                 ? Icons.visibility_off

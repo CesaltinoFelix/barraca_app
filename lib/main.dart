@@ -15,6 +15,7 @@ void main() async {
     theme: ThemeData(
       scaffoldBackgroundColor: Colors.white,
       primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(double.infinity, 48),

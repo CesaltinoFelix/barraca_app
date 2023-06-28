@@ -1,3 +1,6 @@
+import 'package:barraca_app/pages/printer_setting_screen.dart';
+import 'package:barraca_app/pages/scanner_code.dart';
+import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -113,6 +116,11 @@ class HomeScreen extends StatelessWidget {
             onTap: () => Get.to(ProductScreen()),
           ),
           ListTile(
+            leading: Icon(Icons.print),
+            title: Text('Impressora'),
+            onTap: () => Get.to(HelpScreen()),
+          ),
+          ListTile(
             leading: Icon(Icons.help_outline),
             title: Text('Ajuda'),
             onTap: () => Get.to(HelpScreen()),
@@ -126,13 +134,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: kPrimaryColor,
         centerTitle: true,
         elevation: 1,
         title: Text(
           "Barraca",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: OrientationBuilder(

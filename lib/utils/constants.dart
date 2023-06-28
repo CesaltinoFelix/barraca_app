@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-const Color primaryColor = Color(0xFFF2994A);
+const Color kPrimaryColor = Color(0xFFF2994A);
+const Color kSecondaryColor = Color(0xFF3F1391);
+const Color kWhiteColor = Colors.white;
 
 OutlineInputBorder defaultOutlineInputBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(14),
@@ -15,10 +17,56 @@ const kDarkSecondaryColor = Color(0xFF373737);
 const kLightPrimaryColor = Color(0xFFFFB74D);
 const kLightSecondaryColor = Color(0xFFF3F7FB);
 const kAccentColor = Color(0xFFEEEEEE);
+const kDarkColor = Color(0xFF303030);
+const kTransparent = Colors.transparent;
+const kLightColor = Color(0xFF808080);
+const kDefaultPadding = 24.0;
+const kLessPadding = 10.0;
+const kFixPadding = 16.0;
+const kLess = 4.0;
 
-final kTitleTextStyle = TextStyle(
-  fontSize: ScreenUtil().setSp(kSpacingUnit.w * 1.7),
-  fontWeight: FontWeight.w600,
+const kShape = 30.0;
+
+const kRadius = 0.0;
+const kAppBarHeight = 56.0;
+
+const kHeadTextStyle = TextStyle(
+  fontSize: 24.0,
+  fontWeight: FontWeight.bold,
+);
+
+const kSubTextStyle = TextStyle(
+  fontSize: 18.0,
+  color: kLightColor,
+);
+
+const kTitleTextStyle = TextStyle(
+  fontSize: 20.0,
+  color: kPrimaryColor,
+);
+
+const kTitleTextOptionStyle = TextStyle(
+  fontSize: 16.0,
+  color: kDarkColor,
+);
+
+const kDarkTextStyle = TextStyle(
+  fontSize: 20.0,
+  color: kDarkColor,
+);
+const kLightTextStyle = TextStyle(
+  fontSize: 20.0,
+  color: kLightColor,
+);
+
+const kDivider = Divider(
+  color: kAccentColor,
+  thickness: kLessPadding,
+);
+
+const kSmallDivider = Divider(
+  color: kAccentColor,
+  thickness: 5.0,
 );
 
 final kCaptionTextStyle = TextStyle(
@@ -63,3 +111,23 @@ final kLightTheme = ThemeData(
         displayColor: kDarkSecondaryColor,
       ), //colorScheme: ColorScheme(background: kLightSecondaryColor),
 );
+
+final paymentLabels = [
+  'Unitel Money',
+  'Guita',
+  'Cash',
+  'Cartão de Credito/Debito',
+];
+
+final paymentIcons = [
+  Icons.account_balance_wallet,
+  Icons.account_balance_wallet,
+  Icons.money_off,
+  Icons.payment,
+];
+
+const String chatBubble = 'assets/images/chat.json';
+const String conversation = 'assets/images/chat.json';
+const String logo = 'assets/images/logo-1.png';
+const String profile = 'assets/images/avatar.jpeg';
+const String success = 'assets/images/success.json';

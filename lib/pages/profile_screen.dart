@@ -1,3 +1,7 @@
+import 'package:barraca_app/pages/edit_profile.dart';
+import 'package:barraca_app/pages/message.dart';
+import 'package:barraca_app/pages/chat.dart';
+import 'package:barraca_app/pages/my_wallets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
@@ -73,17 +77,20 @@ class ProfileScreen extends StatelessWidget {
             style: kCaptionTextStyle,
           ),
           SizedBox(height: kSpacingUnit.w * 2),
-          Container(
-            height: kSpacingUnit.w * 4,
-            width: kSpacingUnit.w * 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(kSpacingUnit.w * 3),
-              color: Colors.orange.shade300,
-            ),
-            child: Center(
-              child: Text(
-                'Editar Perfil',
-                style: kButtonTextStyle,
+          GestureDetector(
+            onTap: () => Get.to(const EditProfilePage()),
+            child: Container(
+              height: kSpacingUnit.w * 4,
+              width: kSpacingUnit.w * 20,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(kSpacingUnit.w * 3),
+                color: Colors.orange.shade300,
+              ),
+              child: Center(
+                child: Text(
+                  'Editar Perfil',
+                  style: kButtonTextStyle,
+                ),
               ),
             ),
           ),
@@ -112,17 +119,20 @@ class ProfileScreen extends StatelessWidget {
       body: Column(
         children: <Widget>[
           header,
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Expanded(
             child: ListView(
               children: <Widget>[
-                ProfileListItem(
-                  icon: LineAwesomeIcons.user_plus,
-                  text: 'Gerenciar Usúarios',
+                GestureDetector(
+                  onTap: () => Get.to(MyWallets()),
+                  child: const ProfileListItem(
+                    icon: LineAwesomeIcons.wallet,
+                    text: 'Gerenciar Wallets',
+                  ),
                 ),
-                ProfileListItem(
+                const ProfileListItem(
                   icon: LineAwesomeIcons.history,
                   text: 'Historico de Vendas',
                 ),
@@ -134,9 +144,19 @@ class ProfileScreen extends StatelessWidget {
                   icon: LineAwesomeIcons.cog,
                   text: 'Definições',
                 ),
-                ProfileListItem(
-                  icon: LineAwesomeIcons.facebook_messenger,
-                  text: 'Notificatições',
+                GestureDetector(
+                  onTap: () => Get.to(Message()),
+                  child: ProfileListItem(
+                    icon: LineAwesomeIcons.facebook_messenger,
+                    text: 'Notificatições',
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Get.to(Chat()),
+                  child: ProfileListItem(
+                    icon: LineAwesomeIcons.comment,
+                    text: 'Chat',
+                  ),
                 ),
                 ProfileListItem(
                   icon: LineAwesomeIcons.alternate_sign_out,

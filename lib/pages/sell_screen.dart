@@ -1,13 +1,15 @@
 import 'package:barraca_app/controllers/product_controller.dart';
 import 'package:barraca_app/helpers/snackbar_menssage.dart';
+import 'package:barraca_app/pages/payment_screen.dart';
 import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:barraca_app/pages/qr_code.dart';
-import 'package:uno/uno.dart';
-import 'package:barraca_app/helpers/api.dart';
-import 'package:barraca_app/controllers/sale_controller.dart';
-import 'package:barraca_app/controllers/user_controller.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:uno/uno.dart';
+
+import '../components/defaultBackButton.dart';
+import '../components/default_app_bar.dart';
+import '../helpers/api.dart';
 
 class SellScreen extends StatefulWidget {
   const SellScreen({Key? key}) : super(key: key);
@@ -17,22 +19,41 @@ class SellScreen extends StatefulWidget {
 }
 
 class SelltCreenState extends State<SellScreen> {
-  List<dynamic> myOrder = [];
+  final List<dynamic> myOrder = [];
   final uno = Uno();
+  List<dynamic>? Allproducts;
   List<dynamic>? products;
   bool _isLoading = true;
-  productList() async {
+  final TextEditingController searchController = TextEditingController();
+
+  void productList() async {
     var res = await ProductController().productList();
     if (res.data is List<dynamic>) {
       setState(() {
-        products = res.data;
+        Allproducts = res.data;
+        Allproducts!.sort(
+            (a, b) => a['name'].toString().compareTo(b['name'].toString()));
+        products = Allproducts;
         _isLoading = false;
       });
     }
   }
 
+  void searchProduct(String? searchQuery) {
+    setState(() {
+      if (searchQuery != null && searchQuery.isNotEmpty) {
+        products = Allproducts!.where((product) {
+          String productName = product['name'].toString().toLowerCase();
+          return productName.contains(searchQuery.toLowerCase());
+        }).toList();
+      } else {
+        products = Allproducts;
+      }
+    });
+  }
+
   @override
-  initState() {
+  void initState() {
     super.initState();
     try {
       productList();
@@ -53,103 +74,118 @@ class SelltCreenState extends State<SellScreen> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Vender",
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 1,
-        centerTitle: true,
-        backgroundColor: Colors.white,
+      backgroundColor: kWhiteColor,
+      appBar: const DefaultAppBar(
+        title: 'Vender',
+        child: DefaultBackButton(),
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: primaryColor),
+              child: CircularProgressIndicator(color: kPrimaryColor),
             )
           : products != null
               ? Column(
                   children: [
-                    Container(
-                      height: 600,
-                      width: double.infinity,
-                      child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index < products!.length) {
-                              Map<String, dynamic> product = products![index];
-                              return _buildCart(product, myOrder, loadUi);
-                            }
-                          },
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const Divider(thickness: 1.0, color: Colors.grey),
-                          itemCount: products!.length + 1),
+                    search(
+                      onChanged: (value) {
+                        searchProduct(value);
+                      },
+                      searchController: searchController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
+                    Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Produtos Selecionados",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
+                          Container(
+                            height: 570,
+                            width: double.infinity,
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int index) {
+                                if (index < products!.length) {
+                                  Map<String, dynamic> product =
+                                      products![index];
+                                  return _buildCart(product, loadUi);
+                                }
+                                return Container();
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                thickness: 1.0,
+                                color: Colors.grey,
                               ),
-                              Text(
-                                myOrder?.length != null
-                                    ? "${myOrder.length}"
-                                    : "0",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                              itemCount: products!.length,
+                            ),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Valor Total",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "\Kz${totalPrice.toStringAsFixed(2)}",
-                                style: TextStyle(
-                                    color: Colors.green.shade700,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Produtos Selecionados",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      myOrder.length.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "Valor Total",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "\Kz${totalPrice.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                        color: Colors.green.shade700,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 50)
                         ],
                       ),
-                    )
+                    ),
                   ],
                 )
               : Container(),
-      bottomSheet: Padding(
+      bottomSheet: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(10),
           child: ElevatedButton(
             onPressed: () async {
               if (myOrder.isEmpty) {
                 const SnackbarMenssage().nasckProductInfo(context);
               } else {
-                myOrder.forEach((order) {
-                  SaleController().saveSales(data: order, context: context);
-                });
-                const SnackbarMenssage().nasckSalesSuccess(context);
-                Get.off(QrCodePage());
+                Get.to(PaymentScreen(), arguments: myOrder);
               }
             },
             style: ButtonStyle(
@@ -163,12 +199,13 @@ class SelltCreenState extends State<SellScreen> {
                 fontSize: 18,
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
-//Criando os widgets de compras
-  Widget _buildCart(Map<String, dynamic> product, myOrder, loadUi) {
+  Widget _buildCart(Map<String, dynamic> product, Function() loadUi) {
     return Container(
       height: 140,
       child: Row(
@@ -181,10 +218,12 @@ class SelltCreenState extends State<SellScreen> {
                   margin: const EdgeInsets.all(12),
                   width: 150,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                          image: NetworkImage('${baseUrl}/${product['img']}'),
-                          fit: BoxFit.cover)),
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: NetworkImage('${baseUrl}/${product['img']}'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Container(
@@ -196,17 +235,18 @@ class SelltCreenState extends State<SellScreen> {
                         Text(
                           product['name'],
                           style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 15),
                         Container(
                           width: 120,
                           decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 0.8, color: Colors.grey),
-                              borderRadius: BorderRadius.circular(12)),
+                            border: Border.all(width: 0.8, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -223,9 +263,10 @@ class SelltCreenState extends State<SellScreen> {
                                 child: Text(
                                   "-",
                                   style: TextStyle(
-                                      color: Colors.orange.shade300,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w600),
+                                    color: Colors.orange.shade300,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 20),
@@ -234,9 +275,10 @@ class SelltCreenState extends State<SellScreen> {
                                     ? '0'
                                     : product['quantity'].toString(),
                                 style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold),
+                                  color: Colors.black,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 20),
                               GestureDetector(
@@ -251,18 +293,19 @@ class SelltCreenState extends State<SellScreen> {
                                 child: Text(
                                   "+",
                                   style: TextStyle(
-                                      color: Colors.orange.shade300,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.w600),
+                                    color: Colors.orange.shade300,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -271,26 +314,24 @@ class SelltCreenState extends State<SellScreen> {
             child: Column(
               children: [
                 CheckboxExample(
-                    product: product, myOrder: myOrder, loadUi: loadUi),
+                  product: product,
+                  myOrder: myOrder,
+                  loadUi: loadUi,
+                ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
                   "\Kz${product['price']}",
                   style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                /* TextField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter text',
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                ), */
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -298,20 +339,46 @@ class SelltCreenState extends State<SellScreen> {
 }
 
 class CheckboxExample extends StatefulWidget {
-  var product;
-  var myOrder;
-  var loadUi;
-  CheckboxExample({this.product, this.myOrder, this.loadUi, super.key});
+  final Map<String, dynamic> product;
+  final List<dynamic> myOrder;
+  final Function() loadUi;
+
+  const CheckboxExample({
+    required this.product,
+    required this.myOrder,
+    required this.loadUi,
+    Key? key,
+  }) : super(key: key);
+
   @override
   State<CheckboxExample> createState() => _CheckboxExampleState();
 }
 
 class _CheckboxExampleState extends State<CheckboxExample> {
   bool isChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isChecked =
+        widget.myOrder.any((order) => order['id'] == widget.product['id']);
+  }
+
+  @override
+  void didUpdateWidget(CheckboxExample oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    isChecked =
+        widget.myOrder.any((order) => order['id'] == widget.product['id']);
+  }
+
   @override
   Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
       return Colors.orange.shade300;
+    }
+
+    if (!widget.myOrder.any((order) => order['id'] == widget.product['id'])) {
+      isChecked = false;
     }
 
     return Checkbox(
@@ -348,9 +415,45 @@ class _CheckboxExampleState extends State<CheckboxExample> {
   }
 }
 
-bool? search(order, id) {
-  print(id);
-  int index = order.indexWhere((p) => p['id'] == id);
-
-  return index >= 0 ? true : false;
+Widget search({
+  required ValueChanged<String> onChanged,
+  required TextEditingController searchController,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+    child: TextField(
+      controller: searchController,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+        prefixIcon: Padding(
+          padding: EdgeInsets.only(left: 15.0, right: 10.0),
+          child: SvgPicture.asset(
+            'assets/icons/search.svg',
+            color: kPrimaryColor,
+            height: 20.0,
+          ),
+        ),
+        suffixIcon: GestureDetector(
+          onTap: () {
+            searchController.clear();
+            onChanged('');
+          },
+          child: const Icon(
+            Icons.clear,
+            color: Colors.grey,
+          ),
+        ),
+        hintText: 'Pesquisar produtos',
+        hintStyle: TextStyle(color: Colors.grey.shade500),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        filled: true,
+        fillColor: Colors.grey.shade100,
+      ),
+      style: TextStyle(fontSize: 16.0),
+      onChanged: onChanged,
+    ),
+  );
 }

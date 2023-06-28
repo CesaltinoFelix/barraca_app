@@ -10,14 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key});
+class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({Key? key});
 
   @override
-  State<RegisterPage> createState() => RegisterPageState();
+  State<EditProfilePage> createState() => EditProfilePageState();
 }
 
-class RegisterPageState extends State<RegisterPage> {
+class EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _obscureText = true.obs;
   final userController = Get.find<UserController>();
@@ -42,6 +42,15 @@ class RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: Text(
+          "Editar Perfil",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -49,25 +58,13 @@ class RegisterPageState extends State<RegisterPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                Image.asset('assets/images/logo-1.png', height: 70),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                Text(
-                  'Bem-vindo ao Barraca!',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                ),
-                const SizedBox(height: 16),
-                const Text('Crie a sua conta na Barraca'),
-                const SizedBox(height: 32),
                 Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildFormField(
+                        value: userController.email.value.toString(),
                         label: 'Nome',
                         controller: _nameController,
                         validator: _validateName,
@@ -105,12 +102,6 @@ class RegisterPageState extends State<RegisterPage> {
                         controller: _passwordController,
                         validator: _passwordValidator,
                         obscureText: _obscureText.value,
-                        suffixIcon: IconButton(
-                          icon: Icon(_obscureText.value
-                              ? Icons.visibility_off
-                              : Icons.visibility),
-                          onPressed: () => _obscureText.toggle(),
-                        ),
                       ),
                       const SizedBox(height: 24),
                       _buildFormField(
@@ -118,25 +109,19 @@ class RegisterPageState extends State<RegisterPage> {
                         controller: _passwordConfirmController,
                         validator: _passwordValidator,
                         obscureText: _obscureText.value,
-                        suffixIcon: IconButton(
-                          icon: Icon(_obscureText.value
-                              ? Icons.visibility_off
-                              : Icons.visibility),
-                          onPressed: () => _obscureText.toggle(),
-                        ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _registerUser,
+                  onPressed: _editPtofile,
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(
                         const Size(double.infinity, 48)),
                   ),
                   child: const Text(
-                    'Cadastrar-se',
+                    'Salvar Alterações',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -144,22 +129,6 @@ class RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                RichText(
-                  text: TextSpan(
-                    text: 'Já tem uma conta? ',
-                    style: const TextStyle(color: Colors.black),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Login',
-                        style: const TextStyle(color: Color(0xFF3D80DE)),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Get.to(LoginPage());
-                          },
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -170,6 +139,7 @@ class RegisterPageState extends State<RegisterPage> {
 
   Widget _buildFormField({
     required String label,
+    String? value = '',
     required TextEditingController controller,
     required String? Function(String?)? validator,
     TextInputType? keyboardType,
@@ -178,6 +148,7 @@ class RegisterPageState extends State<RegisterPage> {
     bool obscureText = false,
     Widget? suffixIcon,
   }) {
+    print(value);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,14 +158,12 @@ class RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 12),
         TextFormField(
+          initialValue: value != '' ? value : '',
           controller: controller,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           maxLength: maxLength,
           obscureText: obscureText,
-          decoration: InputDecoration(
-            suffixIcon: suffixIcon,
-          ),
           validator: validator,
         ),
       ],
@@ -245,7 +214,7 @@ class RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  Future<void> _registerUser() async {
+  Future<void> _editPtofile() async {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final name = _nameController.text;

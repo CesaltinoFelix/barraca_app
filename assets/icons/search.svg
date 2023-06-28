@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://web.resource.org/cc/" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 128 128">
+  <defs id="defs4">
+    <linearGradient id="linearGradient2431">
+      <stop id="stop2433" stop-color="#c6c6c6" offset="0"/>
+      <stop id="stop2439" stop-color="#434343" offset=".13501"/>
+      <stop id="stop2441" stop-color="#f9f9f9" offset=".64724"/>
+      <stop id="stop2435" stop-color="#bcbcbc" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient2200" y2="56.956" xlink:href="#linearGradient2431" gradientUnits="userSpaceOnUse" x2="98.742" gradientTransform="matrix(.81807 2.1467e-16 8.1138e-17 .95843 9.7827 -59.993)" y1="66.886" x1="98.742"/>
+    <linearGradient id="linearGradient2202" y2="57.94" gradientUnits="userSpaceOnUse" y1="27.844" x2="54.798" x1="35.358">
+      <stop id="stop2355" stop-color="#fff" offset="0"/>
+      <stop id="stop2357" stop-color="#fff" stop-opacity="0" offset="1"/>
+    </linearGradient>
+    <radialGradient id="radialGradient2204" xlink:href="#linearGradient2431" spreadMethod="reflect" gradientUnits="userSpaceOnUse" cy="315.22" cx="370" gradientTransform="matrix(.087793 .018916 -.011537 .053544 12.306 9.9395)" r="261.43"/>
+    <radialGradient id="radialGradient2208" gradientUnits="userSpaceOnUse" cy="135" cx="368.57" gradientTransform="matrix(.20057 .043216 -.021130 .098068 -30.04 5.2036)" r="233.56">
+      <stop id="stop2519" stop-opacity="0" offset="0"/>
+      <stop id="stop2525" stop-opacity="0" offset=".5"/>
+      <stop id="stop2521" offset="1"/>
+    </radialGradient>
+    <radialGradient id="radialGradient2210" fy="53.448" spreadMethod="reflect" gradientUnits="userSpaceOnUse" cy="64.481" cx="59.083" gradientTransform="matrix(.80672 .18425 -.097581 .42726 .33425 3.7054)" r="38.703">
+      <stop id="stop2823" stop-color="#0076c8" offset="0"/>
+      <stop id="stop2825" stop-color="#79c8ff" offset="1"/>
+    </radialGradient>
+    <linearGradient id="linearGradient2214" y2="332.36" xlink:href="#linearGradient2431" spreadMethod="reflect" gradientUnits="userSpaceOnUse" x2="631.43" gradientTransform="matrix(.13465 .029012 -.050771 .23564 7.3354 -51.196)" y1="332.36" x1="108.57"/>
+    <radialGradient id="radialGradient2222" xlink:href="#linearGradient2431" spreadMethod="reflect" gradientUnits="userSpaceOnUse" cy="189.28" cx="-44.12" gradientTransform="matrix(1.938 6.5829e-16 -5.0071e-16 1.6337 -4.5542 -86.188)" r="30.862"/>
+    <linearGradient id="linearGradient2257" y2="61.615" gradientUnits="userSpaceOnUse" x2="54.099" gradientTransform="matrix(1 0 0 .80870 .79012 20.731)" y1="107.26" x1="54.099">
+      <stop id="stop2253" offset="0"/>
+      <stop id="stop2255" stop-opacity="0" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g id="layer1">
+    <g id="g2267" fill-rule="evenodd">
+      <path id="path2224" opacity=".2" d="m32.259 73.44c-13.294 0.124-23.73 2.001-25.531 4.986-0.1461 0.241-0.0342 0.492-0.0629 0.736-0.0004 0.003 0.0004 0.007 0 0.011-0.247 0.236-0.6307 0.453-0.7812 0.703-2.6424 4.377 10.975 9.134 30.406 10.628 9.467 0.728 18.531 0.539 25.688-0.345 0.188 0.091 0.304 0.197 0.562 0.278l4.125 1.305c0.596 0.685 2.654 1.385 5.125 2.142l34.03 12.256c4.44 1.36 11.57 1.49 16 0.29s4.44-3.27 0-4.63l-40.405-10.526c-2.448-0.749-4.747-1.343-7.062-1.561l-3.938-1.227c2.955-0.879 5.085-1.944 5.844-3.201 0.156-0.259 0.08-0.52 0.125-0.781 0.245-0.221 0.608-0.423 0.75-0.658 2.402-3.979-11.413-8.421-30.844-9.915-4.858-0.374-9.6-0.532-14.031-0.491z" style="color:#000000" fill="url(#linearGradient2257)"/>
+      <path id="path2247" d="m74.499 56.911a24.244 21.592 0 1 1 -48.488 0 24.244 21.592 0 1 1 48.488 0z" style="color:#000000" fill="url(#linearGradient2202)" transform="matrix(-.83235 -.033058 .10336 -.24170 85.841 98.446)"/>
+      <path id="path1884" d="m75.484 45.441c-2.643 12.263-20.558 18.819-39.989 14.632-19.431-4.186-33.057-17.538-30.415-29.802 2.6427-12.264 20.558-18.819 39.989-14.632 19.431 4.186 33.057 17.538 30.415 29.802zm-3.074-2.833c-2.025 9.403-17.863 13.976-35.351 10.208s-30.038-14.457-28.012-23.86c2.026-9.402 17.864-13.975 35.352-10.207s30.037 14.457 28.011 23.859z" style="color:#000000" fill="url(#linearGradient2214)"/>
+      <path id="path1886" d="m76.354 41.401c-2.402 11.149-20.122 16.8-39.553 12.613-19.432-4.187-33.252-16.633-30.85-27.782 2.4019-11.149 20.122-16.8 39.553-12.613 19.432 4.186 33.252 16.633 30.85 27.782zm-3.114-2.644c-1.842 8.548-17.53 12.427-35.018 8.659s-30.187-13.763-28.345-22.311c1.842-8.547 17.53-12.427 35.018-8.659 17.488 3.769 30.187 13.764 28.345 22.311z" style="color:#000000" fill="url(#radialGradient2204)"/>
+      <path id="path2371" opacity=".7" d="m44.204 18.703c16.203 3.491 28.001 12.913 28.06 21.758-3.524 7.275-18.027 10.401-34.236 6.908-16.21-3.492-28.164-12.318-28.38-20.399 3.697-8.036 18.353-11.759 34.556-8.267z" style="color:#000000" fill="url(#radialGradient2210)"/>
+      <path id="path1888" opacity=".7" d="m44.383 18.822c-16.214-3.493-30.95-0.037-34.569 7.72 0.0127 0.376 0.0786 0.753 0.1454 1.133 4.4396-6.986 18.512-9.97 33.948-6.644 15.437 3.326 27.036 11.84 28.204 20.035 0.216-0.317 0.429-0.636 0.595-0.973-0.104-8.56-12.109-17.778-28.323-21.271z" style="color:#000000" fill="url(#radialGradient2208)"/>
+      <path id="path2389" d="m74.499 56.911a24.244 21.592 0 1 1 -48.488 0 24.244 21.592 0 1 1 48.488 0z" style="color:#000000" fill="url(#linearGradient2202)" transform="matrix(-.83235 -.065610 .10336 -.47970 85.841 70.498)"/>
+      <path id="path1890" d="m76.354 41.401c-2.402 11.149-20.122 16.8-39.553 12.613-19.432-4.187-33.252-16.633-30.85-27.782 2.4019-11.149 20.122-16.8 39.553-12.613 19.432 4.186 33.252 16.633 30.85 27.782zm-3.114-2.644c-1.842 8.548-17.53 12.427-35.018 8.659s-30.187-13.763-28.345-22.311c1.842-8.547 17.53-12.427 35.018-8.659 17.488 3.769 30.187 13.764 28.345 22.311z" style="color:#000000" fill="url(#radialGradient2204)"/>
+      <path id="path2377" d="m74.499 56.911a24.244 21.592 0 1 1 -48.488 0 24.244 21.592 0 1 1 48.488 0z" style="color:#000000" fill="url(#linearGradient2202)" transform="matrix(.83235 .065610 -.10336 .47970 -3.6443 -1.3274)"/>
+      <rect id="rect2462" ry="4.7198" style="color:#000000" transform="matrix(.75004 .66139 -.77728 .62916 0 0)" height="9.4396" width="19.833" y="-5.3269" x="81.884" fill="url(#linearGradient2200)"/>
+      <path id="rect1428" d="m67.793 59.018c4.432-3.367 8.387-0.595 12.824 3.21l40.413 29.5c4.44 3.805 4.44 9.582 0.01 12.942-4.43 3.37-11.57 3.02-16.01-0.79l-34.042-34.337c-4.437-3.804-7.626-7.158-3.195-10.525z" style="color:#000000" fill="url(#radialGradient2222)"/>
+      <path id="path2158" opacity=".29046" d="m71.87 59.132c-0.585 0.001-1.176 0.114-1.729 0.351-0.131 0.051-0.18 0.121-0.3 0.175 1.963 0.805 3.935 2.278 6.012 4.058l40.407 29.51c3.75 3.22 4.3 7.834 1.7 11.224 3.3-1.35 5.61-4.21 4.34-8.268-3.96-6.286-11.68-9.172-17.16-14.053-10.602-7.439-20.718-15.655-31.542-22.696-0.563-0.189-1.143-0.301-1.728-0.301z" style="color:#000000" fill="#fff"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>magnifying glass</dc:title>
+        <dc:date>2006-12-03T08:49:23</dc:date>
+        <dc:description>clip art, clipart, editorial pick, enlarge, enlarge, glass, glass, icon, icon, image, lens, lens, magnifying, magnifying, magnifying glass, magnifying glass, media, optic, optic, photorealistic, photorealistic, png, public domain, search, search, svg, tool, tool, </dc:description>
+        <dc:source>http://openclipart.org/detail/1750/magnifying-glass-by-thestructorr</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>TheStructorr</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>editorial pick</rdf:li>
+            <rdf:li>enlarge</rdf:li>
+            <rdf:li>glass</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>lens</rdf:li>
+            <rdf:li>magnifying</rdf:li>
+            <rdf:li>magnifying glass</rdf:li>
+            <rdf:li>media</rdf:li>
+            <rdf:li>optic</rdf:li>
+            <rdf:li>photorealistic</rdf:li>
+            <rdf:li>png</rdf:li>
+            <rdf:li>public domain</rdf:li>
+            <rdf:li>search</rdf:li>
+            <rdf:li>svg</rdf:li>
+            <rdf:li>tool</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
