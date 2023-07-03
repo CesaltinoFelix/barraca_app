@@ -49,6 +49,15 @@ List<TransactionModel> myTransactions = [
     color: Colors.red[100],
   ),
   TransactionModel(
+    avatar: "assets/images/avatar.jpeg",
+    currentBalance: "kz4252",
+    changePercentageIndicator: "down",
+    changePercentage: "4.54%",
+    month: "Mar",
+    name: "Félix",
+    color: Colors.orange[100],
+  ),
+  TransactionModel(
     avatar: "assets/images/profile-1.png",
     currentBalance: "kz5052",
     changePercentageIndicator: "up",
@@ -65,6 +74,15 @@ List<TransactionModel> myTransactions = [
     month: "Jan",
     name: "Francisca",
     color: Colors.green[100],
+  ),
+  TransactionModel(
+    avatar: "assets/images/profile-1.png",
+    currentBalance: "kz4252",
+    changePercentageIndicator: "down",
+    changePercentage: "4.54%",
+    month: "Mar",
+    name: "Vinicias",
+    color: Colors.orange[100],
   ),
   TransactionModel(
     avatar: "assets/images/avatar.jpeg",

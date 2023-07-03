@@ -70,28 +70,22 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'E-mail',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
                       const SizedBox(height: 12),
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(),
+                        decoration: const InputDecoration(
+                          labelText: 'E-mail',
+                        ),
                         validator: _emailValidator,
                       ),
                       const SizedBox(height: 24),
-                      Text(
-                        'Senha',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 12),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
+                          labelText: 'Senha',
                           suffixIcon: IconButton(
                             icon: Icon(_obscureText
                                 ? Icons.visibility_off
@@ -127,24 +121,49 @@ class _LoginPageState extends State<LoginPage> {
                       String email = _emailController.text;
                       String password = _passwordController.text;
 
-                      // Fazer a consulta na API
-                      var response = await http.get(
-                          Uri.parse('$baseUrl/login/${email}/${password}'));
+                      try {
+                        // Fazer a consulta na API
+                        var response = await http.get(
+                            Uri.parse('$baseUrl/login/${email}/${password}'));
 
-                      if (response.statusCode == 200) {
-                        // Redirecionar para a tela inicial
-                        var responseData = await json.decode(response.body);
+                        if (response.statusCode == 200) {
+                          // Redirecionar para a tela inicial
+                          var responseData = await json.decode(response.body);
+                          var costumertResponse = await http.get(Uri.parse(
+                              '$baseUrl/costumers/${responseData['entityId']}'));
+                          var newCostumertResponse =
+                              await json.decode(costumertResponse.body);
 
-                        userController.login(responseData['id'].toString(),
-                            responseData['name'], email, responseData['img']);
+                          userController.login(
+                              responseData['id'].toString(),
+                              responseData['name'],
+                              email,
+                              responseData['img'],
+                              newCostumertResponse['nif'],
+                              newCostumertResponse['contact'],
+                              newCostumertResponse['adress']);
 
-                        Get.offAll(HomeScreen());
-                      } else {
-                        // Exibir mensagem de erro ou tratar falha no login
+                          Get.offAll(HomeScreen());
+                        } else {
+                          // Exibir mensagem de erro ou tratar falha no login
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                  'Credenciais inválidas, verifica as suas informações!'),
+                              duration: const Duration(milliseconds: 2000),
+                              backgroundColor: Colors.red.shade400,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          );
+                        }
+                      } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: const Text(
-                                'Credenciais inválidas, verifica as suas informações!'),
+                                'Estamos fora de serviço de momento, por favor tente mais tarde!'),
                             duration: const Duration(milliseconds: 2000),
                             backgroundColor: Colors.red.shade400,
                             behavior: SnackBarBehavior.floating,
@@ -176,7 +195,10 @@ class _LoginPageState extends State<LoginPage> {
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Cadastre-se',
-                        style: const TextStyle(color: Color(0xFF3D80DE)),
+                        style: const TextStyle(
+                            color: Color(0xFF3D80DE),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             // Implementar ação de cadastro

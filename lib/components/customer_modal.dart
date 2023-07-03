@@ -64,7 +64,7 @@ class CustomerModal extends StatelessWidget {
                     onPressed: () {
                       String name = nameController.text;
                       String nif = nifController.text;
-                      if (name.isEmpty) name = 'Desconhecido';
+                      if (name.isEmpty) name = 'Consumidor Final';
                       if (nif.isEmpty) nif = '999999';
                       Map<String, String> result = {'name': name, 'nif': nif};
 

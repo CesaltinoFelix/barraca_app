@@ -1,5 +1,7 @@
+import 'package:barraca_app/pages/login.dart';
+import 'package:barraca_app/pages/my_wallets.dart';
 import 'package:barraca_app/pages/printer_setting_screen.dart';
-import 'package:barraca_app/pages/scanner_code.dart';
+import 'package:barraca_app/components/scanner_code.dart';
 import 'package:barraca_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,9 @@ import 'package:barraca_app/pages/personalize_screen.dart';
 import 'package:barraca_app/pages/product_screen.dart';
 import 'package:barraca_app/pages/sell_screen.dart';
 import 'package:barraca_app/pages/profile_screen.dart';
+
+import 'sell_history_screen.dart';
+import 'sell_status_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserController userController = Get.find<UserController>();
@@ -94,14 +99,19 @@ class HomeScreen extends StatelessWidget {
             onTap: () => Get.to(ProductScreen()),
           ),
           ListTile(
+            leading: Icon(Icons.wallet),
+            title: Text('Gerenciar Wallets'),
+            onTap: () => Get.to(MyWallets()),
+          ),
+          /*  ListTile(
             leading: Icon(Icons.edit_outlined),
             title: Text('Costumizar Produto'),
             onTap: () => Get.to(PersonalizeScreen()),
-          ),
+          ), */
           ListTile(
             leading: Icon(Icons.attach_money_outlined),
             title: Text('Estado das Vendas'),
-            onTap: () => Get.to(ProductScreen()),
+            onTap: () => Get.to(SellStatusScreen()),
           ),
           SizedBox(height: 20),
           Divider(),
@@ -113,17 +123,31 @@ class HomeScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.history),
             title: Text('Historico'),
-            onTap: () => Get.to(ProductScreen()),
+            onTap: () => Get.to(SellHistoryScreen()),
           ),
-          ListTile(
+          /* ListTile(
             leading: Icon(Icons.print),
             title: Text('Impressora'),
-            onTap: () => Get.to(HelpScreen()),
-          ),
+            onTap: () => Get.to(PrintSettingScreen()),
+          ), */
           ListTile(
             leading: Icon(Icons.help_outline),
             title: Text('Ajuda'),
             onTap: () => Get.to(HelpScreen()),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout_outlined,
+              color: Colors.red,
+            ),
+            title: Text('Terminar sessão',
+                style: TextStyle(
+                  color: Colors.red,
+                )),
+            onTap: () {
+              userController.logout();
+              Get.off(LoginPage());
+            },
           ),
         ],
       ),

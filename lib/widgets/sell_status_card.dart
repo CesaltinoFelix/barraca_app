@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:barraca_app/constants/app_textstyle.dart';
 import 'package:barraca_app/data/transaction_data.dart';
+import 'package:barraca_app/helpers/money_format.dart';
 
-import '../helpers/money_format.dart';
-
-class TransactionCard extends StatelessWidget {
+class SellStatusCard extends StatelessWidget {
   final TransactionModel? transaction;
-  const TransactionCard({Key? key, this.transaction}) : super(key: key);
+  const SellStatusCard({Key? key, this.transaction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,23 +71,20 @@ class TransactionCard extends StatelessWidget {
                   Row(
                     children: [
                       transaction!.changePercentageIndicator == "up"
-                          ? Icon(
-                              FontAwesomeIcons.levelUpAlt,
-                              size: 10,
-                              color: Colors.green,
+                          ? Text(
+                              'Concluido',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.green,
+                              ),
                             )
-                          : Icon(
-                              FontAwesomeIcons.levelDownAlt,
-                              size: 10,
-                              color: Colors.red,
-                            ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        transaction!.changePercentage ?? '',
-                        style: ApptextStyle.LISTTILE_SUB_TITLE,
-                      ),
+                          : Text(
+                              'Pendente',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.orange,
+                              ),
+                            )
                     ],
                   ),
                 ],

@@ -6,6 +6,9 @@ class UserController extends GetxController {
   RxString id = ''.obs;
   RxString username = ''.obs;
   RxString email = ''.obs;
+  RxString nif = ''.obs;
+  RxString contact = ''.obs;
+  RxString adress = ''.obs;
   RxBool isLoggedIn = false.obs;
   RxString img = ''.obs;
 
@@ -16,27 +19,39 @@ class UserController extends GetxController {
     String name = await loadData('name');
     String email = await loadData('email');
     String img = await loadData('img');
+    String nif = await loadData('nif');
+    String contact = await loadData('contact');
+    String adress = await loadData('adress');
     if (id != '') {
       username.value = name;
       this.email.value = email;
       this.id.value = id;
+      this.nif.value = nif;
+      this.contact.value = contact;
       this.img.value = img;
+      this.adress.value = adress;
       isLoggedIn.value = true;
     }
   }
 
-  void login(String id, String username, String email, String img) async {
+  void login(String id, String username, String email, String img, String nif,
+      String contact, String adress) async {
     // Salva os dados do usuário na memória
     this.username.value = username;
     this.email.value = email;
     this.id.value = id;
     this.img.value = img;
+    this.nif.value = nif;
+    this.contact.value = contact;
+    this.adress.value = adress;
     isLoggedIn.value = true;
 
     await saveData('id', id);
     await saveData('name', username);
     await saveData('email', email);
-    await saveData('img', img);
+    await saveData('nif', nif);
+    await saveData('contact', contact);
+    await saveData('adress', adress);
   }
 
   // Método para fazer o logout do usuário
@@ -46,12 +61,18 @@ class UserController extends GetxController {
     email.value = '';
     id.value = '';
     img.value = '';
+    nif.value = '';
+    contact.value = '';
+    adress.value = '';
     isLoggedIn.value = false;
 
     await deleteData('id');
     await deleteData('name');
     await deleteData('email');
     await deleteData('img');
+    await deleteData('nif');
+    await deleteData('adress');
+    await deleteData('contact');
   }
 
   Future<void> saveData(String key, String value) async {

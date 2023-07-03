@@ -6,6 +6,8 @@ import 'package:barraca_app/pages/login.dart';
 import 'package:get/get.dart';
 import 'package:barraca_app/utils/constants.dart';
 
+import 'pages/onboard.dart';
+
 void main() async {
   final UserController userController = Get.put(UserController());
   userController.verifyLogin();
@@ -38,7 +40,7 @@ void main() async {
         ),
       ),
     ),
-    home: userId != '' ? HomeScreen() : WelcomeScreen(),
+    home: userId != '' ? HomeScreen() : Onboard(),
   ));
 }
 

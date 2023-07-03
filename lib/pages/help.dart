@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../components/defaultBackButton.dart';
+import '../components/default_app_bar.dart';
+import '../utils/constants.dart';
+
 class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 1,
-        title: const Text(
-          "Ajuda",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-        ),
+      backgroundColor: kWhiteColor,
+      appBar: DefaultAppBar(
+        title: 'Ajuda',
+        child: DefaultBackButton(),
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),

@@ -15,6 +15,7 @@ class ProductController extends GetxController {
       'description': data['description'].toString(),
       'price': data['price'],
       'img': data['img'].toString(),
+      'barcode': data['barcode'].toString(),
     };
     try {
       String userId = await userController.loadData('id');
@@ -41,6 +42,7 @@ class ProductController extends GetxController {
       'description': data['description'].toString(),
       'price': data['price'],
       'img': data['img'].toString(),
+      'barcode': data['barcode'].toString(),
     };
     try {
       await uno

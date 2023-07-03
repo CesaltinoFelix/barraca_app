@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:barraca_app/pages/scanner_code.dart';
+import 'package:barraca_app/components/scanner_code.dart';
 import 'package:intl/intl.dart';
 import 'package:barraca_app/controllers/product_controller.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -98,6 +98,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   void initState() {
     setState(() {
       product = Get?.arguments;
+      productbarcodeController_text.text =
+          product != null ? product!['barcode'].toString() : '';
     });
     super.initState();
   }
@@ -138,8 +140,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   onScanToggle() {
     setState(() {
       is_onScan = !is_onScan;
-
-      print(is_onScan);
     });
   }
 
@@ -153,182 +153,187 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               child: DefaultBackButton(),
             )
           : null,
-      body: /* _isLoading
+      body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(color: kPrimaryColor),
             )
-          : */
-          is_onScan
-              ? ScannerCode(
-                  productbarcodeController_text: productbarcodeController_text,
-                  onScanToggle: onScanToggle,
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 40),
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 4,
-                                  child: Lottie.asset(
-                                      'assets/images/shopping.json')),
-                              Column(
+          : Container(
+              child: is_onScan
+                  ? ScannerCode(
+                      productbarcodeController_text:
+                          productbarcodeController_text,
+                      onScanToggle: onScanToggle,
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
+                                  Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              4,
+                                      child: Lottie.asset(
+                                          'assets/images/shopping.json')),
                                   Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(
-                                        'Barcode',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black87,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          TextFormField(
+                                            controller:
+                                                productbarcodeController_text,
+                                            obscureText: false,
+                                            onSaved: (barcode) =>
+                                                _formData['barcode'] =
+                                                    barcode ?? '',
+                                            cursorColor: Colors.orange.shade300,
+                                            decoration: InputDecoration(
+                                              labelText:
+                                                  'Códico de barra (opcional)',
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color:
+                                                        Colors.orange.shade300),
+                                              ),
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 10),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color:
+                                                        Colors.grey.shade400),
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color:
+                                                        Colors.grey.shade400),
+                                              ),
+                                              suffixIcon: IconButton(
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      is_onScan = true;
+                                                    });
+                                                  },
+                                                  icon: Icon(
+                                                      Icons.qr_code_scanner)),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                        ],
+                                      ),
+                                      makeInput(
+                                          value: product?['name'],
+                                          label: "Nome",
+                                          onSaved: (name) =>
+                                              _formData['name'] = name ?? '',
+                                          validator: _validateName),
+                                      makePriceInput(
+                                          value: product?['price'],
+                                          label: "Preço",
+                                          onSaved: (price) =>
+                                              _formData['price'] = price ?? '',
+                                          validator: _validatePrice),
+                                      makeInput(
+                                          value: product?['description'],
+                                          label: "Descrição",
+                                          obscureText: false,
+                                          onSaved: (description) =>
+                                              _formData['description'] =
+                                                  description ?? '',
+                                          validator: null),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Imagem',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black87),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 4,
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(8)),
+                                              ),
+                                              child: GestureDetector(
+                                                child: makeInputImg(),
+                                                onTap: () async {
+                                                  String? result =
+                                                      await showDialog<String>(
+                                                    context: context,
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        PhotoModal(),
+                                                  );
+                                                  result != null
+                                                      ? _openImagePicker(
+                                                          result!)
+                                                      : null;
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      TextFormField(
-                                        controller:
-                                            productbarcodeController_text,
-                                        // initialValue: value != null ? value.toString() : '',
-                                        obscureText: false,
-
-                                        cursorColor: Colors.orange.shade300,
-                                        decoration: InputDecoration(
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.orange.shade300),
-                                          ),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 10),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey.shade400),
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.grey.shade400),
-                                          ),
-                                          suffixIcon: IconButton(
-                                              onPressed: () async {
-                                                setState(() {
-                                                  is_onScan = true;
-                                                });
-                                              },
-                                              icon:
-                                                  Icon(Icons.qr_code_scanner)),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 30,
-                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      )
                                     ],
                                   ),
-                                  makeInput(
-                                      value: product?['name'],
-                                      label: "Nome",
-                                      onSaved: (name) =>
-                                          _formData['name'] = name ?? '',
-                                      validator: _validateName),
-                                  makePriceInput(
-                                      value: product?['price'],
-                                      label: "Preço",
-                                      onSaved: (price) =>
-                                          _formData['price'] = price ?? '',
-                                      validator: _validatePrice),
-                                  makeInput(
-                                      value: product?['description'],
-                                      label: "Descrição",
-                                      obscureText: false,
-                                      onSaved: (description) =>
-                                          _formData['description'] =
-                                              description ?? '',
-                                      validator: null),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Imagem',
+                                  Column(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: _submitForm,
+                                        style: ButtonStyle(
+                                          minimumSize:
+                                              MaterialStateProperty.all(
+                                                  const Size(
+                                                      double.infinity, 48)),
+                                        ),
+                                        child: Text(
+                                          "Salvar Produto",
                                           style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black87),
-                                        ),
-                                        const SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 4, color: Colors.white),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(8)),
-                                          ),
-                                          child: GestureDetector(
-                                            child: makeInputImg(),
-                                            onTap: () async {
-                                              String? result =
-                                                  await showDialog<String>(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        PhotoModal(),
-                                              );
-                                              result != null
-                                                  ? _openImagePicker(result!)
-                                                  : null;
-                                            },
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  )
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: _submitForm,
-                                    style: ButtonStyle(
-                                      minimumSize: MaterialStateProperty.all(
-                                          const Size(double.infinity, 48)),
-                                    ),
-                                    child: Text(
-                                      "Salvar Produto",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
                                       ),
-                                    ),
+                                      SizedBox(
+                                        height: 20,
+                                      )
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  )
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+            ),
     );
   }
 
@@ -343,14 +348,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: Colors.black87,
-          ),
-        ),
         SizedBox(
           height: 5,
         ),
@@ -361,6 +358,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           obscureText: obscureText,
           cursorColor: Colors.orange.shade300,
           decoration: InputDecoration(
+            labelText: label,
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.orange.shade300),
             ),
@@ -390,17 +388,6 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: Colors.black87,
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
         TextFormField(
           initialValue: value != null ? value.toString() : '',
           validator: validator,
@@ -408,6 +395,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           cursorColor: Colors.orange.shade300,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
+            labelText: label,
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.orange.shade300),
             ),

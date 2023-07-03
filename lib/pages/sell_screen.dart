@@ -9,7 +9,10 @@ import 'package:uno/uno.dart';
 
 import '../components/defaultBackButton.dart';
 import '../components/default_app_bar.dart';
+import '../components/emptySection.dart';
 import '../helpers/api.dart';
+import '../helpers/money_format.dart';
+import 'product_form_screen.dart';
 
 class SellScreen extends StatefulWidget {
   const SellScreen({Key? key}) : super(key: key);
@@ -83,7 +86,7 @@ class SelltCreenState extends State<SellScreen> {
           ? const Center(
               child: CircularProgressIndicator(color: kPrimaryColor),
             )
-          : products != null
+          : products!.length != 0
               ? Column(
                   children: [
                     search(
@@ -96,7 +99,7 @@ class SelltCreenState extends State<SellScreen> {
                       child: Column(
                         children: [
                           Container(
-                            height: 570,
+                            height: MediaQuery.of(context).size.height * 0.64,
                             width: double.infinity,
                             child: ListView.separated(
                               shrinkWrap: true,
@@ -117,58 +120,61 @@ class SelltCreenState extends State<SellScreen> {
                               itemCount: products!.length,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Produtos Selecionados",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.14,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Produtos Selecionados",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      myOrder.length.toString(),
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        myOrder.length.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        "Valor Total",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Valor Total",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                      Text(
+                                        "\Kz${moneyFormat(double.parse(totalPrice!.toString()))}",
+                                        style: TextStyle(
+                                          color: Colors.green.shade700,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "\Kz${totalPrice.toStringAsFixed(2)}",
-                                      style: TextStyle(
-                                        color: Colors.green.shade700,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                              ],
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -176,30 +182,35 @@ class SelltCreenState extends State<SellScreen> {
                     ),
                   ],
                 )
-              : Container(),
-      bottomSheet: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ElevatedButton(
-            onPressed: () async {
-              if (myOrder.isEmpty) {
-                const SnackbarMenssage().nasckProductInfo(context);
-              } else {
-                Get.to(PaymentScreen(), arguments: myOrder);
-              }
-            },
-            style: ButtonStyle(
-              minimumSize:
-                  MaterialStateProperty.all(const Size(double.infinity, 48)),
-            ),
-            child: const Text(
-              'Concluir',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-              ),
-            ),
+              : EmptySection(
+                  emptyImg: emptyBox,
+                  emptyMsg: 'Nenhum Produto Cadastrado',
+                ),
+      bottomSheet: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ElevatedButton(
+          onPressed: () async {
+            if (products!.length == 0) {
+              return Get.to(ProductFormScreen());
+            } else if (myOrder.isEmpty) {
+              const SnackbarMenssage().nasckProductInfo(context);
+            } else {
+              Get.to(PaymentScreen(), arguments: myOrder);
+            }
+          },
+          style: ButtonStyle(
+            minimumSize:
+                MaterialStateProperty.all(const Size(double.infinity, 48)),
           ),
+          child: _isLoading
+              ? null
+              : Text(
+                  products?.length != 0 ? 'Concluir' : 'Cadastrar Produto',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
         ),
       ),
     );
@@ -207,7 +218,7 @@ class SelltCreenState extends State<SellScreen> {
 
   Widget _buildCart(Map<String, dynamic> product, Function() loadUi) {
     return Container(
-      height: 140,
+      height: 120,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -247,59 +258,61 @@ class SelltCreenState extends State<SellScreen> {
                             border: Border.all(width: 0.8, color: Colors.grey),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: product['quantity'] == null ||
-                                        product['quantity'] == 0 ||
-                                        product['quantity'] == 1
-                                    ? null
-                                    : () {
-                                        setState(() {
-                                          product['quantity']--;
-                                        });
-                                      },
-                                child: Text(
-                                  "-",
-                                  style: TextStyle(
-                                    color: Colors.orange.shade300,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w600,
+                          child: FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: product['quantity'] == null ||
+                                          product['quantity'] == 0 ||
+                                          product['quantity'] == 1
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            product['quantity']--;
+                                          });
+                                        },
+                                  child: Text(
+                                    "-",
+                                    style: TextStyle(
+                                      color: Colors.orange.shade300,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 20),
-                              Text(
-                                product['quantity'] == null
-                                    ? '0'
-                                    : product['quantity'].toString(),
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: product['quantity'] == null ||
-                                        product['quantity'] == 0
-                                    ? null
-                                    : () {
-                                        setState(() {
-                                          product['quantity']++;
-                                        });
-                                      },
-                                child: Text(
-                                  "+",
-                                  style: TextStyle(
-                                    color: Colors.orange.shade300,
+                                const SizedBox(width: 20),
+                                Text(
+                                  product['quantity'] == null
+                                      ? '0'
+                                      : product['quantity'].toString(),
+                                  style: const TextStyle(
+                                    color: Colors.black,
                                     fontSize: 30,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 20),
+                                GestureDetector(
+                                  onTap: product['quantity'] == null ||
+                                          product['quantity'] == 0
+                                      ? null
+                                      : () {
+                                          setState(() {
+                                            product['quantity']++;
+                                          });
+                                        },
+                                  child: Text(
+                                    "+",
+                                    style: TextStyle(
+                                      color: Colors.orange.shade300,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -310,6 +323,7 @@ class SelltCreenState extends State<SellScreen> {
             ),
           ),
           Container(
+            width: 70,
             margin: const EdgeInsets.all(12),
             child: Column(
               children: [
@@ -321,12 +335,14 @@ class SelltCreenState extends State<SellScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  "\Kz${product['price']}",
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                FittedBox(
+                  child: Text(
+                    "\Kz${moneyFormat(product['price'])}",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../components/defaultBackButton.dart';
 import '../components/default_app_bar.dart';
+import '../components/emptySection.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({Key? key}) : super(key: key);
@@ -38,105 +39,108 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: DefaultAppBar(
-        title: "Lista de Produtos",
-        action: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => ProductFormScreen()),
-              );
-            },
-          )
-        ],
-        child: DefaultBackButton(),
-      ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: kPrimaryColor),
+        resizeToAvoidBottomInset: true,
+        appBar: DefaultAppBar(
+          title: "Lista de Produtos",
+          action: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => ProductFormScreen()),
+                );
+              },
             )
-          : products != null
-              ? ListView.builder(
-                  itemCount: products?.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var product = products?.data[index];
+          ],
+          child: DefaultBackButton(),
+        ),
+        body: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: kPrimaryColor),
+              )
+            : products?.data.length != 0
+                ? ListView.builder(
+                    itemCount: products?.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var product = products?.data[index];
 
-                    return Dismissible(
-                      key: UniqueKey(),
-                      direction: DismissDirection.horizontal,
-                      background: Container(
-                        color: Colors.red,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
+                      return Dismissible(
+                        key: UniqueKey(),
+                        direction: DismissDirection.horizontal,
+                        background: Container(
+                          color: Colors.red,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      secondaryBackground: Container(
-                        color: Colors.green,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.white,
+                        secondaryBackground: Container(
+                          color: Colors.green,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      child: _buildProductCard(product),
-                      onDismissed: (direction) async {
-                        if (direction == DismissDirection.startToEnd) {
-                          // Excluir o produto
-                          await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Excluir Produto'),
-                              content: const Text('Tem certeza?'),
-                              actions: [
-                                TextButton(
-                                  child: const Text('Não'),
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop(false);
-                                    setState(() {});
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Sim'),
-                                  onPressed: () async {
-                                    Navigator.of(ctx).pop(true);
-                                    await ProductController()
-                                        .productDelete(product['id']);
-                                    fetchProductList();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ).then((value) {
-                            if (value ?? false) {
-                              // Produto excluído com sucesso
-                            }
-                          });
-                        } else if (direction == DismissDirection.endToStart) {
-                          Get.to(ProductFormScreen(), arguments: product)!
-                              .then((value) {
-                            setState(() {});
-                          });
-                        }
-                      },
-                    );
-                  },
-                )
-              : Container(),
-    );
+                        child: _buildProductCard(product),
+                        onDismissed: (direction) async {
+                          if (direction == DismissDirection.startToEnd) {
+                            // Excluir o produto
+                            await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Excluir Produto'),
+                                content: const Text('Tem certeza?'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Não'),
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop(false);
+                                      setState(() {});
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Sim'),
+                                    onPressed: () async {
+                                      Navigator.of(ctx).pop(true);
+                                      await ProductController()
+                                          .productDelete(product['id']);
+                                      fetchProductList();
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ).then((value) {
+                              if (value ?? false) {
+                                // Produto excluído com sucesso
+                              }
+                            });
+                          } else if (direction == DismissDirection.endToStart) {
+                            print(product);
+                            Get.to(ProductFormScreen(), arguments: product)!
+                                .then((value) {
+                              setState(() {});
+                            });
+                          }
+                        },
+                      );
+                    },
+                  )
+                : EmptySection(
+                    emptyImg: emptyBox,
+                    emptyMsg: 'Nenhum Produto Cadastrado',
+                  ));
   }
 
   // Build the product card widget

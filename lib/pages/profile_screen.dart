@@ -1,14 +1,16 @@
 import 'package:barraca_app/pages/edit_profile.dart';
+import 'package:barraca_app/pages/login.dart';
 import 'package:barraca_app/pages/message.dart';
 import 'package:barraca_app/pages/chat.dart';
 import 'package:barraca_app/pages/my_wallets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-import 'package:barraca_app/main.dart';
 import 'package:barraca_app/utils/constants.dart';
 import 'package:barraca_app/components/profile_list_item.dart';
 import 'package:barraca_app/controllers/user_controller.dart';
+import '../components/defaultBackButton.dart';
+import '../components/default_app_bar.dart';
 import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -105,16 +107,10 @@ class ProfileScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Perfil",
-          style: TextStyle(color: Colors.black),
-        ),
-        elevation: 1,
-        centerTitle: true,
-        backgroundColor: Colors.white,
+      backgroundColor: kWhiteColor,
+      appBar: const DefaultAppBar(
+        title: 'Perfil',
+        child: DefaultBackButton(),
       ),
       body: Column(
         children: <Widget>[
@@ -160,11 +156,11 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 ProfileListItem(
                   icon: LineAwesomeIcons.alternate_sign_out,
-                  text: 'Logout',
+                  text: 'Terminar sessão',
                   hasNavigation: false,
                   onPress: () {
                     userController.logout();
-                    Get.off(WelcomeScreen());
+                    Get.off(LoginPage());
                   },
                 ),
               ],

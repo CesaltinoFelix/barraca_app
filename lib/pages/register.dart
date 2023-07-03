@@ -19,7 +19,7 @@ class RegisterPage extends StatefulWidget {
 
 class RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  final _obscureText = true.obs;
+  bool _obscureText = true;
   final userController = Get.find<UserController>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -27,6 +27,7 @@ class RegisterPageState extends State<RegisterPage> {
   final _nameController = TextEditingController();
   final _nifController = TextEditingController();
   final _contactController = TextEditingController();
+  final _adressController = TextEditingController();
 
   @override
   void dispose() {
@@ -68,7 +69,7 @@ class RegisterPageState extends State<RegisterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildFormField(
-                        label: 'Nome',
+                        label: 'Nome (Entidade)',
                         controller: _nameController,
                         validator: _validateName,
                         keyboardType: TextInputType.name,
@@ -101,15 +102,25 @@ class RegisterPageState extends State<RegisterPage> {
                       ),
                       const SizedBox(height: 24),
                       _buildFormField(
+                        label: 'Endereço',
+                        controller: _adressController,
+                        validator: null,
+                        keyboardType: TextInputType.streetAddress,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 24),
+                      _buildFormField(
                         label: 'Senha',
                         controller: _passwordController,
                         validator: _passwordValidator,
-                        obscureText: _obscureText.value,
+                        obscureText: _obscureText,
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureText.value
+                          icon: Icon(_obscureText
                               ? Icons.visibility_off
                               : Icons.visibility),
-                          onPressed: () => _obscureText.toggle(),
+                          onPressed: () => setState(() {
+                            _obscureText = !_obscureText;
+                          }),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -117,12 +128,14 @@ class RegisterPageState extends State<RegisterPage> {
                         label: 'Confirmar Senha',
                         controller: _passwordConfirmController,
                         validator: _passwordValidator,
-                        obscureText: _obscureText.value,
+                        obscureText: _obscureText,
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureText.value
+                          icon: Icon(_obscureText
                               ? Icons.visibility_off
                               : Icons.visibility),
-                          onPressed: () => _obscureText.toggle(),
+                          onPressed: () => setState(() {
+                            _obscureText = !_obscureText;
+                          }),
                         ),
                       ),
                     ],
@@ -151,7 +164,10 @@ class RegisterPageState extends State<RegisterPage> {
                     children: <TextSpan>[
                       TextSpan(
                         text: 'Login',
-                        style: const TextStyle(color: Color(0xFF3D80DE)),
+                        style: const TextStyle(
+                            color: Color(0xFF3D80DE),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Get.to(LoginPage());
@@ -181,10 +197,6 @@ class RegisterPageState extends State<RegisterPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
         const SizedBox(height: 12),
         TextFormField(
           controller: controller,
@@ -194,6 +206,7 @@ class RegisterPageState extends State<RegisterPage> {
           obscureText: obscureText,
           decoration: InputDecoration(
             suffixIcon: suffixIcon,
+            labelText: label,
           ),
           validator: validator,
         ),
@@ -251,6 +264,7 @@ class RegisterPageState extends State<RegisterPage> {
       final name = _nameController.text;
       final nif = _nifController.text;
       final contact = _contactController.text;
+      final adress = _adressController.text;
       final password = _passwordController.text;
       final passwordConfirm = _passwordConfirmController.text;
 
@@ -263,45 +277,48 @@ class RegisterPageState extends State<RegisterPage> {
         'name': name,
         'nif': nif,
         'email': email,
+        'adress': adress,
         'contact': contact,
       };
-
+      dynamic costumerResponse;
       try {
-        final costumerResponse = await http.post(
+        costumerResponse = await http.post(
           Uri.parse('$baseUrl/costumers'),
           body: requestCostumerBody,
         );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Erro ao conectar ao servidor'),
+            duration: const Duration(milliseconds: 2000),
+            backgroundColor: Colors.red.shade400,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
+        );
+      }
 
-        if (costumerResponse.statusCode == 200) {
-          final responseCostumerData = json.decode(costumerResponse.body);
-          final requestUserBody = {
-            'name': name,
-            'password': password,
-            'email': email,
-            'entityId': responseCostumerData['id'].toString(),
-          };
+      if (costumerResponse.statusCode == 200) {
+        final responseCostumerData = json.decode(costumerResponse.body);
+        final requestUserBody = {
+          'name': name,
+          'password': password,
+          'email': email,
+          'entityId': responseCostumerData['id'].toString(),
+        };
+        dynamic response;
 
-          final response = await http.post(
+        try {
+          response = await http.post(
             Uri.parse('$baseUrl/users'),
             body: requestUserBody,
           );
-
-          final responseUserData = json.decode(response.body);
-
-          userController.login(
-            responseUserData['id'].toString(),
-            responseUserData['name'],
-            email,
-            responseUserData['img'],
-          );
-
-          SnackbarMenssage().nasckRegisterSuccess(context, name);
-          Get.offAll(HomeScreen());
-        } else {
+        } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  const Text('Erro ao registrar, tente novamente mais tarde!'),
+              content: const Text('Erro ao conectar ao servidor'),
               duration: const Duration(milliseconds: 2000),
               backgroundColor: Colors.red.shade400,
               behavior: SnackBarBehavior.floating,
@@ -311,10 +328,25 @@ class RegisterPageState extends State<RegisterPage> {
             ),
           );
         }
-      } catch (error) {
+
+        final responseUserData = json.decode(response.body);
+
+        userController.login(
+            responseUserData['id'].toString(),
+            responseUserData['name'],
+            email,
+            responseUserData['img'],
+            responseCostumerData['nif'],
+            responseCostumerData['contact'],
+            responseCostumerData['adress']);
+
+        SnackbarMenssage().nasckRegisterSuccess(context, name);
+        Get.offAll(HomeScreen());
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Erro ao conectar ao servidor'),
+            content:
+                const Text('Erro ao registrar, tente novamente mais tarde!'),
             duration: const Duration(milliseconds: 2000),
             backgroundColor: Colors.red.shade400,
             behavior: SnackBarBehavior.floating,

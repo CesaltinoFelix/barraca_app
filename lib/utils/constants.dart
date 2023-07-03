@@ -115,8 +115,8 @@ final kLightTheme = ThemeData(
 final paymentLabels = [
   'Unitel Money',
   'Guita',
-  'Cash',
-  'Cartão de Credito/Debito',
+  // 'Cash',
+  // 'Cartão de Credito/Debito',
 ];
 
 final paymentIcons = [
@@ -131,3 +131,4 @@ const String conversation = 'assets/images/chat.json';
 const String logo = 'assets/images/logo-1.png';
 const String profile = 'assets/images/avatar.jpeg';
 const String success = 'assets/images/success.json';
+const String emptyBox = 'assets/images/empty-box.json';

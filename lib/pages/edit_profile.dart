@@ -4,6 +4,7 @@ import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:barraca_app/helpers/api.dart';
 import 'package:barraca_app/helpers/snackbar_menssage.dart';
 import 'package:barraca_app/pages/home_screen.dart';
+import 'package:barraca_app/controllers/user_controller.dart';
 import 'package:barraca_app/pages/login.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class EditProfilePageState extends State<EditProfilePage> {
   final _nameController = TextEditingController();
   final _nifController = TextEditingController();
   final _contactController = TextEditingController();
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -158,7 +158,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         ),
         const SizedBox(height: 12),
         TextFormField(
-          initialValue: value != '' ? value : '',
+          // initialValue: value != '' ? value : '',
           controller: controller,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
@@ -228,49 +228,40 @@ class EditProfilePageState extends State<EditProfilePage> {
         return;
       }
 
-      final requestCostumerBody = {
-        'name': name,
-        'nif': nif,
-        'email': email,
-        'contact': contact,
-      };
-
       try {
-        final costumerResponse = await http.post(
-          Uri.parse('$baseUrl/costumers'),
-          body: requestCostumerBody,
+        final requestUserBody = {
+          'name': name,
+          'password': password,
+          'email': email,
+        };
+
+        final response = await http.put(
+          Uri.parse('$baseUrl/users/${userController.id.value}'),
+          body: requestUserBody,
         );
 
-        if (costumerResponse.statusCode == 200) {
-          final responseCostumerData = json.decode(costumerResponse.body);
-          final requestUserBody = {
-            'name': name,
-            'password': password,
-            'email': email,
-            'entityId': responseCostumerData['id'].toString(),
-          };
-
-          final response = await http.post(
-            Uri.parse('$baseUrl/users'),
-            body: requestUserBody,
-          );
-
+        if (response.statusCode == 200) {
           final responseUserData = json.decode(response.body);
+          var costumertResponse = await http.get(
+              Uri.parse('$baseUrl/costumer/${responseUserData['entityId']}'));
+          var newCostumertResponse = await json.decode(costumertResponse.body);
 
           userController.login(
-            responseUserData['id'].toString(),
-            responseUserData['name'],
-            email,
-            responseUserData['img'],
-          );
+              responseUserData['id'].toString(),
+              responseUserData['name'],
+              email,
+              responseUserData['img'],
+              newCostumertResponse['nif'],
+              newCostumertResponse['contact'],
+              newCostumertResponse['adress']);
 
           SnackbarMenssage().nasckRegisterSuccess(context, name);
           Get.offAll(HomeScreen());
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  const Text('Erro ao registrar, tente novamente mais tarde!'),
+              content: const Text(
+                  'Erro ao actualizar dados, tente novamente mais tarde!'),
               duration: const Duration(milliseconds: 2000),
               backgroundColor: Colors.red.shade400,
               behavior: SnackBarBehavior.floating,
