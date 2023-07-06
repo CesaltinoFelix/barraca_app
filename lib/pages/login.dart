@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final uno = Uno();
+  bool isLogin = false;
 
   String? _emailValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -115,77 +116,93 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      // Extrair dados do formulário
-                      String email = _emailController.text;
-                      String password = _passwordController.text;
+                  onPressed: isLogin
+                      ? null
+                      : () async {
+                          setState(() {
+                            isLogin = true;
+                          });
+                          if (_formKey.currentState!.validate()) {
+                            // Extrair dados do formulário
+                            String email = _emailController.text;
+                            String password = _passwordController.text;
 
-                      try {
-                        // Fazer a consulta na API
-                        var response = await http.get(
-                            Uri.parse('$baseUrl/login/${email}/${password}'));
+                            try {
+                              // Fazer a consulta na API
+                              var response = await http.get(Uri.parse(
+                                  '$baseUrl/login/${email}/${password}'));
+                              print('$email $password');
 
-                        if (response.statusCode == 200) {
-                          // Redirecionar para a tela inicial
-                          var responseData = await json.decode(response.body);
-                          var costumertResponse = await http.get(Uri.parse(
-                              '$baseUrl/costumers/${responseData['entityId']}'));
-                          var newCostumertResponse =
-                              await json.decode(costumertResponse.body);
+                              if (response.statusCode == 200) {
+                                // Redirecionar para a tela inicial
+                                var responseData =
+                                    await json.decode(response.body);
+                                var costumertResponse = await http.get(Uri.parse(
+                                    '$baseUrl/costumers/${responseData['entityId']}'));
+                                var newCostumertResponse =
+                                    await json.decode(costumertResponse.body);
+                                print(newCostumertResponse);
+                                userController.login(
+                                    responseData['id'].toString(),
+                                    responseData['name'],
+                                    email,
+                                    responseData['img'],
+                                    newCostumertResponse['nif'],
+                                    newCostumertResponse['contact'],
+                                    newCostumertResponse['adress']);
 
-                          userController.login(
-                              responseData['id'].toString(),
-                              responseData['name'],
-                              email,
-                              responseData['img'],
-                              newCostumertResponse['nif'],
-                              newCostumertResponse['contact'],
-                              newCostumertResponse['adress']);
-
-                          Get.offAll(HomeScreen());
-                        } else {
-                          // Exibir mensagem de erro ou tratar falha no login
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text(
-                                  'Credenciais inválidas, verifica as suas informações!'),
-                              duration: const Duration(milliseconds: 2000),
-                              backgroundColor: Colors.red.shade400,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                          );
-                        }
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                                'Estamos fora de serviço de momento, por favor tente mais tarde!'),
-                            duration: const Duration(milliseconds: 2000),
-                            backgroundColor: Colors.red.shade400,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
+                                Get.offAll(HomeScreen());
+                              } else {
+                                // Exibir mensagem de erro ou tratar falha no login
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: const Text(
+                                        'Credenciais inválidas, verifica as suas informações!'),
+                                    duration:
+                                        const Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.red.shade400,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text(
+                                      'Estamos fora de serviço de momento, por favor tente mais tarde!'),
+                                  duration: const Duration(milliseconds: 2000),
+                                  backgroundColor: Colors.red.shade400,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } finally {
+                              setState(() {
+                                isLogin = false;
+                              });
+                            }
+                          }
+                        },
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(
                         const Size(double.infinity, 48)),
                   ),
-                  child: const Text(
-                    'Entrar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                    ),
-                  ),
+                  child: isLogin
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          'Entrar',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 16),
                 RichText(

@@ -119,6 +119,11 @@ final paymentLabels = [
   // 'Cartão de Credito/Debito',
 ];
 
+final paymentImages = [
+  'assets/images/wallets/unitel.png',
+  'assets/images/wallets/guita.png',
+];
+
 final paymentIcons = [
   Icons.account_balance_wallet,
   Icons.account_balance_wallet,

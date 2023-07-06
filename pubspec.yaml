@@ -38,12 +38,12 @@ dependencies:
   lottie: ^2.3.2
   flutter_svg: ^0.22.0
   simple_animations: ^5.0.0+3
-  outline_material_icons_tv: ^0.1.1-nullsafety
+  # outline_material_icons_tv: ^0.1.1-nullsafety
   font_awesome_flutter: ^10.4.0
   curved_navigation_bar: ^1.0.3
   line_awesome_flutter: ^2.0.0
   flutter_screenutil: ^5.7.0
-  animated_theme_switcher: ^2.0.8
+  # animated_theme_switcher: ^2.0.8
   uno: ^1.1.8
   share_plus: any 
   image_picker: ^0.8.7+5
@@ -60,7 +60,7 @@ dependencies:
   # bluetooth_print: ^4.3.0
   esc_pos_utils: ^1.1.0
   esc_pos_printer: ^4.0.5
-  oktoast: ^3.0.0
+  # oktoast: ^3.0.0
   # esc_pos_bluetooth:
   sunmi_printer_plus: ^2.1.1
 dev_dependencies:
@@ -88,6 +88,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/wallets/
     - assets/images/home/
     - assets/images/bottom/
     - assets/images/products/

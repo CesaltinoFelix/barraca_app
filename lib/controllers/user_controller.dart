@@ -11,6 +11,7 @@ class UserController extends GetxController {
   RxString adress = ''.obs;
   RxBool isLoggedIn = false.obs;
   RxString img = ''.obs;
+  RxString hasLogeded = 'no'.obs;
 
   // Método para fazer o login do usuário
 
@@ -52,6 +53,8 @@ class UserController extends GetxController {
     await saveData('nif', nif);
     await saveData('contact', contact);
     await saveData('adress', adress);
+
+    await saveData('hasLogeded', 'yes');
   }
 
   // Método para fazer o logout do usuário

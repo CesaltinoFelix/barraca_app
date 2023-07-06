@@ -28,7 +28,7 @@ class RegisterPageState extends State<RegisterPage> {
   final _nifController = TextEditingController();
   final _contactController = TextEditingController();
   final _adressController = TextEditingController();
-
+  bool isResgisting = false;
   @override
   void dispose() {
     _emailController.dispose();
@@ -143,18 +143,22 @@ class RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _registerUser,
+                  onPressed: isResgisting ? null : _registerUser,
                   style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(
                         const Size(double.infinity, 48)),
                   ),
-                  child: const Text(
-                    'Cadastrar-se',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                    ),
-                  ),
+                  child: isResgisting
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          'Cadastrar-se',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 16),
                 RichText(
@@ -259,6 +263,9 @@ class RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _registerUser() async {
+    setState(() {
+      isResgisting = true;
+    });
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final name = _nameController.text;
@@ -298,9 +305,13 @@ class RegisterPageState extends State<RegisterPage> {
             ),
           ),
         );
+
+        return setState(() {
+          isResgisting = false;
+        });
       }
 
-      if (costumerResponse.statusCode == 200) {
+      if (costumerResponse != null && costumerResponse.statusCode == 200) {
         final responseCostumerData = json.decode(costumerResponse.body);
         final requestUserBody = {
           'name': name,
@@ -327,9 +338,12 @@ class RegisterPageState extends State<RegisterPage> {
               ),
             ),
           );
-        }
 
-        final responseUserData = json.decode(response.body);
+          return setState(() {
+            isResgisting = false;
+          });
+        }
+        final responseUserData = await json.decode(response.body);
 
         userController.login(
             responseUserData['id'].toString(),
@@ -355,7 +369,14 @@ class RegisterPageState extends State<RegisterPage> {
             ),
           ),
         );
+        setState(() {
+          isResgisting = false;
+        });
       }
     }
+
+    setState(() {
+      isResgisting = false;
+    });
   }
 }

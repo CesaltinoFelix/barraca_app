@@ -12,6 +12,7 @@ void main() async {
   final UserController userController = Get.put(UserController());
   userController.verifyLogin();
   String userId = await userController.loadData('id');
+  String hasLogeded = await userController.loadData('hasLogeded');
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
@@ -40,7 +41,11 @@ void main() async {
         ),
       ),
     ),
-    home: userId != '' ? HomeScreen() : Onboard(),
+    home: userId != ''
+        ? HomeScreen()
+        : hasLogeded == 'no'
+            ? Onboard()
+            : LoginPage(),
   ));
 }
 

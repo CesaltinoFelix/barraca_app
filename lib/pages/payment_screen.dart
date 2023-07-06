@@ -10,6 +10,7 @@ import 'package:barraca_app/components/customer_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:uno/uno.dart';
 import 'package:barraca_app/helpers/gerar_codigo.dart';
 import '../controllers/user_controller.dart';
@@ -95,17 +96,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
               itemCount: paymentLabels.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Radio(
-                    activeColor: kPrimaryColor,
-                    value: index,
-                    groupValue: value,
-                    onChanged: (i) => setState(() => value = i!),
+                  leading: Container(
+                    margin: const EdgeInsets.all(4),
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: const Offset(0,
+                              3), // define o deslocamento da sombra horizontalmente e verticalmente
+                        ),
+                      ],
+                      image: DecorationImage(
+                        image: AssetImage(paymentImages[index]),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                   title: Text(
                     paymentLabels[index],
                     style: TextStyle(color: kDarkColor),
                   ),
-                  trailing: Icon(paymentIcons[index], color: kPrimaryColor),
+                  trailing: Radio(
+                    activeColor: kPrimaryColor,
+                    value: index,
+                    groupValue: value,
+                    onChanged: (i) => setState(() => value = i!),
+                  ),
                 );
               },
               separatorBuilder: (context, index) {
@@ -201,6 +222,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 }
 
+String formatarDataAtual() {
+  DateTime dataAtual = DateTime.now();
+  DateFormat formato = DateFormat('dd/MM/yyyy');
+  String dataFormatada = formato.format(dataAtual);
+  return dataFormatada;
+}
+
 //Future<String?>
 void sendOrderItems(userController, List<OrderItem> orderItems,
     String codigoFatura, Map<String, String>? customerData) async {
@@ -217,6 +245,7 @@ void sendOrderItems(userController, List<OrderItem> orderItems,
     return null;
   } */
   double totalSale = 0;
+  String currentDate = formatarDataAtual();
   await SunmiPrinter.initPrinter();
 
   await SunmiPrinter.startTransactionPrint(true);
@@ -241,11 +270,11 @@ void sendOrderItems(userController, List<OrderItem> orderItems,
     style: SunmiStyle(align: SunmiPrintAlign.CENTER),
   );
   await SunmiPrinter.line();
-  await SunmiPrinter.printText('FR 202306/23');
+  await SunmiPrinter.printText('FR ${currentDate.replaceAll('/', '')}/23');
   await SunmiPrinter.line();
   await SunmiPrinter.printRow(cols: [
     ColumnMaker(text: 'Original', width: 15, align: SunmiPrintAlign.LEFT),
-    ColumnMaker(text: '02/07/2023', width: 15, align: SunmiPrintAlign.RIGHT),
+    ColumnMaker(text: currentDate, width: 15, align: SunmiPrintAlign.RIGHT),
   ]);
   await SunmiPrinter.lineWrap(1);
   await SunmiPrinter.printText('Nome: ${customerData!['name']}');
@@ -300,8 +329,8 @@ void sendOrderItems(userController, List<OrderItem> orderItems,
   await SunmiPrinter.resetBold();
   await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
   await SunmiPrinter.printQRCode(
-      'https://www.linkedin.com/company/mfal-systems?originalSubdomain=ao',
-      size: 4);
+      '{"codigoOperador":"","nomeBeneficiario":"MFAL- PRESTACAO DE SERVICOSSULDA","valor":"500,00","codigoQRCode":"8D291F8159F2791840C00FBEDD26C3373734170C3F5AAFF66AF55F5A86982706970230C61821F8074B67A9562A3E2DF41A7C1E1E7ACC252D7B1A8C85CD49A71FC7A40BE02D3EE6402B5A4CED455E4E283080138AE46F807D43AC480F7407BA890DAB524DB33B927F23270C8023590A796EA4ED40F1975580A0AF57F7DBD2DFB8"}',
+      size: 3);
   await SunmiPrinter.lineWrap(2);
   await SunmiPrinter.printText(
     'Processado por programa',
