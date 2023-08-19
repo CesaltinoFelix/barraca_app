@@ -5,6 +5,7 @@ class UserController extends GetxController {
   // Observáveis para os dados do usuário
   RxString id = ''.obs;
   RxString username = ''.obs;
+  RxString token = ''.obs;
   RxString email = ''.obs;
   RxString nif = ''.obs;
   RxString contact = ''.obs;
@@ -18,6 +19,7 @@ class UserController extends GetxController {
   void verifyLogin() async {
     String id = await loadData('id');
     String name = await loadData('name');
+    String token = await loadData('token');
     String email = await loadData('email');
     String img = await loadData('img');
     String nif = await loadData('nif');
@@ -26,6 +28,7 @@ class UserController extends GetxController {
     if (id != '') {
       username.value = name;
       this.email.value = email;
+      this.token.value = token;
       this.id.value = id;
       this.nif.value = nif;
       this.contact.value = contact;
@@ -35,10 +38,11 @@ class UserController extends GetxController {
     }
   }
 
-  void login(String id, String username, String email, String img, String nif,
-      String contact, String adress) async {
+  void login(String id, String username, String token, String email, String img,
+      String nif, String contact, String adress) async {
     // Salva os dados do usuário na memória
     this.username.value = username;
+    this.token.value = token;
     this.email.value = email;
     this.id.value = id;
     this.img.value = img;
@@ -49,6 +53,7 @@ class UserController extends GetxController {
 
     await saveData('id', id);
     await saveData('name', username);
+    await saveData('token', token);
     await saveData('email', email);
     await saveData('nif', nif);
     await saveData('contact', contact);
@@ -62,6 +67,7 @@ class UserController extends GetxController {
     // Limpa os dados do usuário da memória
     username.value = '';
     email.value = '';
+    token.value = '';
     id.value = '';
     img.value = '';
     nif.value = '';
@@ -71,6 +77,7 @@ class UserController extends GetxController {
 
     await deleteData('id');
     await deleteData('name');
+    await deleteData('token');
     await deleteData('email');
     await deleteData('img');
     await deleteData('nif');

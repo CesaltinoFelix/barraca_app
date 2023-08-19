@@ -348,6 +348,7 @@ class RegisterPageState extends State<RegisterPage> {
         userController.login(
             responseUserData['id'].toString(),
             responseUserData['name'],
+            responseUserData['token'],
             email,
             responseUserData['img'],
             responseCostumerData['nif'],

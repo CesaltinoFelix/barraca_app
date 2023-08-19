@@ -249,6 +249,7 @@ class EditProfilePageState extends State<EditProfilePage> {
           userController.login(
               responseUserData['id'].toString(),
               responseUserData['name'],
+              responseUserData['token'],
               email,
               responseUserData['img'],
               newCostumertResponse['nif'],

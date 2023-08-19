@@ -120,31 +120,45 @@ class _LoginPageState extends State<LoginPage> {
                       ? null
                       : () async {
                           setState(() {
-                            isLogin = true;
+                            // isLogin = true;
                           });
                           if (_formKey.currentState!.validate()) {
                             // Extrair dados do formulário
                             String email = _emailController.text;
                             String password = _passwordController.text;
+                            Map<String, dynamic> data = {
+                              'email': email,
+                              'password': password,
+                              // Adicione outros campos e valores conforme necessário
+                            };
 
                             try {
                               // Fazer a consulta na API
-                              var response = await http.get(Uri.parse(
-                                  '$baseUrl/login/${email}/${password}'));
-                              print('$email $password');
+                              var response = await http.post(
+                                  Uri.parse('$baseUrl/login'),
+                                  body: data);
 
                               if (response.statusCode == 200) {
                                 // Redirecionar para a tela inicial
+
                                 var responseData =
                                     await json.decode(response.body);
-                                var costumertResponse = await http.get(Uri.parse(
-                                    '$baseUrl/costumers/${responseData['entityId']}'));
+                                Map<String, String> headers = {
+                                  'x-acess-token': '${responseData['token']}',
+                                  'Content-Type':
+                                      'application/json', // Indica que o corpo da requisição é em formato JSON
+                                };
+                                var costumertResponse = await http.get(
+                                    Uri.parse(
+                                        '$baseUrl/costumers/${responseData['entityId']}'),
+                                    headers: headers);
                                 var newCostumertResponse =
                                     await json.decode(costumertResponse.body);
-                                print(newCostumertResponse);
+
                                 userController.login(
                                     responseData['id'].toString(),
                                     responseData['name'],
+                                    responseData['token'],
                                     email,
                                     responseData['img'],
                                     newCostumertResponse['nif'],
